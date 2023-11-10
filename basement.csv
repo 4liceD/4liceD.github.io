@@ -1,22 +1,25 @@
-Name,Stage,Mic,Menu
-AliceD,True,True,True
-'Saya',True,True,True
-Karet,True,True,True
-Nightwisp,True,True,True
-rach․,True,False,False
-YÆRU,True,False,False
-ᴄᴏᴅʏ,True,True,True
-Thelvaen,True,True,True
-Pesky12,True,True,True
-Chanoler,True,True,True
-Hroi,True,True,True
-De_Mez,True,True,True
--Blurple-,False,False,True
-~Alinda~,False,False,True
-LocalPogChamp,True,False,False
-Advanced Derp,False,False,True
-loka666,False,False,True
-MCItech,False,False,True
-Zivaniafezt,False,False,True
-ItsNexiiツ,False,False,True
-Usеr,False,False,True
+Name,Stage,Mic,Menu,Helper,Host,DJ
+AliceD,True,True,True,False,True,True
+'Saya',True,True,True,False,True,True
+Karet,True,True,True,False,False,False
+Nightwisp,True,True,True,False,False,False
+rach․,True,False,False,False,False,True
+YÆRU,True,False,False,False,False,True
+ᴄᴏᴅʏ,True,True,True,False,False,False
+Thelvaen,True,True,True,False,False,False
+Pesky12,True,True,True,False,False,False
+Chanoler,True,True,True,False,False,False
+Hroi,True,True,True,False,False,False
+De_Mez,True,True,True,False,False,False
+-Blurple-,False,False,True,True,False,False
+~Alinda~,False,False,True,True,False,False
+LocalPogChamp,True,False,False,False,False,True
+Advanced Derp,False,False,True,True,False,False
+loka666,False,False,True,True,False,False
+MCItech,False,False,True,True,False,False
+Zivaniafezt,False,False,True,True,False,False
+ItsNexiiツ,False,False,True,True,False,False
+Usеr,False,False,True,True,True,True
+General N․ Core,False,False,False,False,False,True
+MissStabby,False,False,False,False,False,True
+Yisuna,False,False,False,False,False,True

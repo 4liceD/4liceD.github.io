@@ -1,6 +1,6 @@
 Name,Stage,Mic,Menu,Helper,Host,DJ,Duck
-AliceD,True,True,True,False,True,True,True
-'Saya',True,True,True,False,True,True,True
+AliceD,True,True,True,False,False,False,True
+'Saya',True,True,True,False,False,False,True
 Karet,True,True,True,False,False,False,False
 Nightwisp,True,True,True,False,False,False,False
 rach․,True,False,False,False,False,True,False

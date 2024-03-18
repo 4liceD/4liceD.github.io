@@ -1,10 +1,10 @@
 Name,DJ,Host,Staff,VIP,Menu,Stage,Duck,Backstage
-AliceD,True,True,True,True,True,True,True,True
-'Saya',True,True,True,True,True,True,True,True
+AliceD,False,False,False,False,True,True,True,True
+'Saya',False,False,False,False,True,True,True,True
 100chilly,False,False,False,True,False,True,False,False
 MCItech,False,False,False,True,True,False,True,False
 MissStabby,False,False,False,True,True,True,False,False
-࿇༒Ira༒࿇,True,True,True,True,False,True,False,True
+࿇༒Ira༒࿇,False,False,False,False,False,False,False,False
 Yisuna,False,False,False,True,True,True,False,False
 YÆRU,False,False,False,True,True,False,False,False
 Thelvaen,False,False,False,True,True,False,False,False
@@ -18,6 +18,3 @@ Advanced Derp,False,False,False,True,True,False,True,False
 Usеr,False,False,False,True,False,False,True,False
 Aria Aurora,False,False,False,True,True,False,True,False
 ~Taco~,False,False,False,True,True,False,True,False
-Kampfhase,True,True,True,True,False,True,False,True
-Atkom,True,False,False,True,False,True,False,True
-General N․ Core,True,False,False,True,False,True,False,True

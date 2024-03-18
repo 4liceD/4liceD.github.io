@@ -1,6 +1,6 @@
 Name,DJ,Host,Staff,VIP,Menu,Stage,Duck,Backstage
-AliceD,False,False,False,False,True,True,True,True
-'Saya',False,False,False,False,True,True,True,True
+AliceD,False,False,True,False,True,True,True,True
+'Saya',False,False,True,False,True,True,True,True
 100chilly,False,False,False,True,False,True,False,False
 MCItech,False,False,False,True,True,False,True,False
 MissStabby,False,False,False,True,True,True,False,False

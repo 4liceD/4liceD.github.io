@@ -1,10 +1,10 @@
 Name,Stage,Mic,Menu,Helper,Host,DJ,Duck
-AliceD,True,True,True,False,True,True,True
-'Saya',True,True,True,False,True,True,True
+AliceD,True,True,True,False,True,False,True
+'Saya',True,True,True,False,True,False,True
 Karet,True,True,True,False,False,False,False
 Nightwisp,True,True,True,False,False,False,False
 Shokushra,True,False,True,True,False,False,False
-ᴄᴏᴅʏ,True,False,True,False,False,False,False
+ᴄᴏᴅʏ,True,True,True,False,False,False,False
 Pesky12,True,True,True,False,False,False,False
 Chanoler,True,True,True,False,False,False,False
 Hroi,True,True,True,False,False,False,False

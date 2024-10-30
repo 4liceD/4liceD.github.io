@@ -165,8 +165,17 @@
         ];
         let currentImageIndex = 0;
         function changeBackgroundImage() {
-            document.body.style.backgroundImage = `url('${backgroundImages[currentImageIndex]}')`;
-            currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+            const newImage = new Image();
+            newImage.onload = function() {
+                document.body.style.backgroundImage = `url('${backgroundImages[currentImageIndex]}')`;
+                currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+            };
+            newImage.onerror = function() {
+                console.error(`Failed to load image: ${backgroundImages[currentImageIndex]}`);
+                currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+                changeBackgroundImage(); // Try the next image
+            };
+            newImage.src = backgroundImages[currentImageIndex];
         }
 
 // Change background image every 5 seconds

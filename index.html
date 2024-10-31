@@ -153,6 +153,7 @@
             <img src="https://www.google.com/s2/favicons?domain=discord.com" alt="Discord" class="link-icon">
             <span>Join my Discord</span>
         </a>
+        <a href="#" id="secret-link" class="link">Click for a surprise!</a>
     </div>
 </div>
 
@@ -228,6 +229,40 @@
             });
         }
     });
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const secretLink = document.getElementById('secret-link');
+        let clickCount = 0;
+
+        secretLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            clickCount++;
+
+            if (clickCount === 5) {
+                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+                clickCount = 0;
+            } else {
+// Do something innocent here, like showing a random fact
+                showRandomFact();
+            }
+        });
+    });
+
+    function showRandomFact() {
+        const facts = [
+            "Did you know? Bananas are berries, but strawberries aren't!",
+            "Fun fact: The shortest war in history lasted 38 minutes.",
+            "Weird science: If you yell for 8 years, 7 months and 6 days, you'll produce enough sound energy to heat one cup of coffee.",
+            "Hidden Reality fact: Our community was initially known as the 'Digital Rabbithole' before evolving into the thriving hub it is today!",
+            "AliceD trivia: Did you know AliceD is not just a DJ, but also a skilled VR world creator?",
+            "AliceD fun fact: AliceD's signature look includes a cap adorned with numerous buttons - each telling a story!",
+            "AliceD's style: AliceD is known for her unique fashion sense, often sporting dark tech-style clothes that scream 'DJ' from a mile away!",
+            "Hidden Reality culture: Our community is built on creativity, inclusivity, and mutual respect - a digital home for all!",
+            "AliceD fun fact: AliceD's DJ equipment once gained sentience and tried to take over the rave. We don't talk about that night.",
+            "AliceD's adventure: AliceD once got lost in her own VR world for 3 days. She claims it was 'for research'.",
+            "Hidden Reality legend: There's a rumor of a secret room in one of our worlds that only opens on a leap year. Nobody's found it... yet."
+        ];
+        alert(facts[Math.floor(Math.random() * facts.length)]);
+    }
 </script>
 </body>
 </html>

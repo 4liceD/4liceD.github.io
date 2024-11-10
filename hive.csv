@@ -1,5 +1,5 @@
-Name,Host,Camera
-xkmerlz,True,False
-AliceD,True,False
-jef67,True,False
-djnotmerlz,True,True
+Name,Host,Camera,Booth
+xkmerlz,True,False,True
+AliceD,True,False,True
+jef67,True,False,True
+djnotmerlz,True,True,True

@@ -32,7 +32,7 @@
             transition: background-image 1s ease-in-out;
         }
         .container {
-            background: rgba(30, 30, 35, 0.7); /* Slightly lighter container */
+            background: rgba(30, 30, 35, 0.7);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -42,6 +42,10 @@
             text-align: center;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             border: 1px solid rgba(255, 255, 255, 0.18);
+            max-height: 90vh; /* Slightly less than full height to show there's content */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 20px auto; /* Centers container and adds some space */
         }
         .logo {
             width: 200px;
@@ -82,6 +86,27 @@
             margin: 5px 0;
             box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15); /* subtle shadow for depth */
         }
+        .links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns by default */
+            gap: 4px;
+        }
+
+        .link {
+            background: rgba(230, 0, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 13px 17px;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(230, 0, 255, 0.2);
+            margin: 5px 0;
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+        }
 
         .link-icon {
             width: 22px;
@@ -98,9 +123,10 @@
 
         .link:active {
             background: rgba(230, 0, 255, 0.25);
-            transform: translateY(2px); /* a touch of spring */
+            transform: translateY(2px);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
+
         @media (max-width: 600px) {
             .container {
                 width: 90%;

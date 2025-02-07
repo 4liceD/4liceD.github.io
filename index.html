@@ -32,12 +32,16 @@
             transition: background-image 1s ease-in-out;
         }
         .container {
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(30, 30, 35, 0.7); /* Slightly lighter container */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 20px;
             width: 80%;
             max-width: 600px;
             text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         .logo {
             width: 200px;
@@ -47,35 +51,55 @@
             background-size: cover;
             border-radius: 20%;
         }
-        h1, p {
-            color: #fff;
+        h1 {
+            font-size: 2.8em;
+            margin: 10px 0 15px; /* Adjusted spacing */
+            font-weight: 600;
+            background: linear-gradient(45deg, #fff, rgba(255, 255, 255, 0.8));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
+        #description {
+            color: #fff;
+            margin: 10px 0 20px;
+            min-height: 1.2em;
+            font-size: 1.1em;
+            opacity: 0.9;
         }
         .link {
-            background-color: #333;
+            background: rgba(230, 0, 255, 0.1); /* Bright, vibrant purple with transparency */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: #fff;
-            padding: 10px;
+            padding: 13px 17px; /* a bit more roomy */
             text-decoration: none;
-            border-radius: 5px;
-            transition: transform 0.3s, background-color 0.3s;
+            border-radius: 10px; /* slightly more rounded */
+            transition: all 0.2s ease-in-out; /* more dynamic transition */
             display: flex;
-            align-items: left;
-            justify-content: left;
+            align-items: center;
+            border: 1px solid rgba(230, 0, 255, 0.2);
+            margin: 5px 0;
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15); /* subtle shadow for depth */
         }
 
         .link-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
+            width: 22px;
+            height: 22px; /* slightly larger */
+            margin-right: 14px; /* more spacing */
+            opacity: 1; /* make icon super clear */
         }
+
         .link:hover {
-            background-color: #555;
-            transform: scale(1.05);
+            background: rgba(230, 0, 255, 0.2);
+            border: 1px solid rgba(230, 0, 255, 0.3);
+            transform: scale(1.03); /* subtle zoom effect*/
+        }
+
+        .link:active {
+            background: rgba(230, 0, 255, 0.25);
+            transform: translateY(2px); /* a touch of spring */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         @media (max-width: 600px) {
             .container {
@@ -87,20 +111,27 @@
             }
         }
         .hidden-reality-link {
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-
-        .hidden-reality-link a {
-            color: #E100FF; /* A vibrant purple color */
+            background: rgba(0, 255, 255, 0.2); /* Cyber cyan background */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 15px 20px;
             text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            margin: 25px 0;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+            font-weight: 600;
         }
 
-        .hidden-reality-link a:hover {
-            color: #FF00E1; /* A different shade for hover effect */
-            text-decoration: underline;
+        .hidden-reality-link:hover {
+            background: rgba(0, 255, 255, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.25);
         }
     </style>
 </head>
@@ -109,41 +140,46 @@
     <div class="logo"></div>
     <h1>AliceD</h1>
     <p id="description">Neurofunk Enjoyer</p>
-    <p class="hidden-reality-link">
-        <a href="https://vrc.to/hiddenreality/" target="_blank">Creator of Hidden Reality</a>
-    </p> 
+    <a href="https://hidden-reality.github.io/" class="hidden-reality-link" target="_blank">
+        <img src="https://raw.githubusercontent.com/Hidden-Reality/Hidden-Reality.github.io/main/linktree/favicon.png" alt="Hidden Reality" class="link-icon">
+        <span>Founder of Hidden Reality</span>
+    </a>
     <div class="links">
-        <a href="https://vrc.group/ACID.4060" class="link">
+        <a href="https://vrc.group/ACID.4060" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=vrchat.com" alt="VRChat" class="link-icon">
             <span>VRChat Group</span>
         </a>
-        <a href="https://x.com/4liceD_" class="link">
+        <a href="https://x.com/4liceD_" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=x.com" alt="X (Twitter)" class="link-icon">
             <span>X (Twitter)</span>
         </a>
-        <a href="https://bsky.app/profile/aliced.hidden-reality.net" class="link">
+        <a href="https://bsky.app/profile/aliced.hidden-reality.net" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=bsky.app" alt="Bluesky" class="link-icon">
             <span>Bluesky</span>
         </a>
-        <a href="https://www.twitch.tv/4licedj" class="link">
+        <a href="https://www.twitch.tv/4licedj" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=twitch.tv" alt="Twitch" class="link-icon">
             <span>Twitch</span>
         </a>
-        <a href="https://www.instagram.com/4liced/" class="link">
+        <a href="https://www.instagram.com/4liced/" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=instagram.com" alt="Instagram" class="link-icon">
             <span>Instagram</span>
         </a>
-        <a href="https://www.youtube.com/@4liced_" class="link">
+        <a href="https://www.youtube.com/@4liced_" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=youtube.com" alt="YouTube" class="link-icon">
             <span>YouTube</span>
         </a>
-        <a href="https://www.tiktok.com/@4liced" class="link">
+        <a href="https://www.tiktok.com/@4liced" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=tiktok.com" alt="TikTok" class="link-icon">
             <span>TikTok</span>
         </a>
-        <a href="https://aliced.artstation.com" class="link">
+        <a href="https://aliced.artstation.com" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=artstation.com" alt="ArtStation" class="link-icon">
             <span>ArtStation</span>
+        </a>
+        <a href="https://aliced.booth.pm" class="link" target="_blank">
+            <img src="https://www.google.com/s2/favicons?domain=booth.pm" alt="Booth" class="link-icon">
+            <span>Booth</span>
         </a>
         <a href="rtspt://stream.vrcdn.live/live/4liced" class="link" id="vr-stream-link" data-original-text="VRCDN">
             <img src="https://www.google.com/s2/favicons?domain=vrcdn.live" alt="VRCDN" class="link-icon">
@@ -151,7 +187,7 @@
         </a>
         <a href="https://discord.gg/7peUVemWgS" class="link" target="_blank">
             <img src="https://www.google.com/s2/favicons?domain=discord.com" alt="Discord" class="link-icon">
-            <span>Join my Discord</span>
+            <span>Support Discord</span>
         </a>
         <a href="#" id="secret-link" class="link">Click for a surprise!</a>
     </div>
@@ -196,7 +232,13 @@
         const descriptions = [
             "DJ extraordinaire",
             "3D Artist",
-            "VR enthusiast"
+            "VR enthusiast",
+            "Jump Up's Worst Nightmare",
+            "German Engineering at its Finest",
+            "Professional Avatar Breaker",
+            "Secretly a Stack of Shaders in a Trenchcoat",
+            "Certified VRChat Gremlin",
+            "Neurofunk Enjoyer"
         ];
         let currentDescIndex = 0;
         setInterval(() => {

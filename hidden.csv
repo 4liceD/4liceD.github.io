@@ -1,12 +1,12 @@
-Name,Creator,DJ,Host,Staff,VIP,Menu,Stage,Duck,Backstage,Camera
-AliceD,True,False,False,False,False,True,True,True,True,True
-'Saya',True,False,False,False,True,True,True,True,True,False
-Zivaniafezt,False,False,True,True,True,True,True,True,True,False
-MCItech,False,False,False,True,True,True,False,True,False,False
-Advanced Derp,False,False,False,True,True,True,False,True,False,False
-Usеr,False,False,False,False,False,False,True,False,False,False
-N8-Core,False,True,False,True,True,True,True,True,True,False
-MKKelvinHK,False,False,False,True,True,True,False,True,False,False
-Cinnamon Loop,False,False,False,True,True,True,True,True,True,False
-thomatoes50,False,False,False,False,True,True,False,True,True,False
-DJ Love Sense,False,False,False,False,True,True,True,False,False,True
+Name,Creator,DJ,Host,Staff,VIP,Menu,Stage,Duck,Backstage,Camera,Video
+AliceD,True,False,False,False,False,True,True,True,True,False,True
+'Saya',True,False,False,False,True,True,True,True,True,False,True
+Zivaniafezt,False,False,True,True,True,True,True,True,True,False,True
+MCItech,False,False,False,True,True,True,False,True,False,False,False
+Advanced Derp,False,False,False,True,True,True,False,True,False,False,False
+Usеr,False,False,False,False,False,False,True,False,False,False,True
+N8-Core,False,True,False,True,True,True,True,True,True,False,True
+MKKelvinHK,False,False,False,True,True,True,False,True,False,False,False
+Cinnamon Loop,False,False,False,True,True,True,True,True,True,False,False
+thomatoes50,False,False,False,False,True,True,False,True,True,False,False
+DJ Love Sense,False,False,False,False,True,True,True,False,False,True,True

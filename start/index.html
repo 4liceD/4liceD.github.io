@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEON DASH</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --neon-pink: #ff2a6d;
+      --neon-blue: #05d9e8;
+      --neon-purple: #d300c5;
+      --neon-orange: #ff8c42;
+      --neon-green: #3cff00;
+      --neon-yellow: #f9d423;
+      --amber-light: #ffb347;
+      --dark-bg: #1a120b;
+    }
+
+    /* === SCANLINES ON TOP OF EVERYTHING === */
+    body {
+      background:
+              url('7.webp') center/cover no-repeat fixed,
+              linear-gradient(to bottom, #1a120b, #0d0904);
+      color: var(--amber-light);
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* Scanlines overlay (now on top layer) */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+              repeating-linear-gradient(
+                      0deg,
+                      rgba(0,0,0,0.5) 0px,
+                      rgba(0,0,0,0.5) 1px,
+                      transparent 1px,
+                      transparent 2px
+              );
+      pointer-events: none;
+      z-index: 9999; /* Topmost layer */
+      mix-blend-mode: overlay;
+    }
+
+    /* === CONTAINER WITH DEPTH === */
+    .container {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      max-width: 1400px;
+      margin: 10px auto;
+      padding: 15px;
+      background-color: rgba(26, 18, 11, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 8px;
+      border: 1px solid var(--amber-light);
+      box-shadow:
+              inset 0 0 20px rgba(0,0,0,0.4),
+              0 0 30px rgba(0,0,0,0.6);
+    }
+
+    /* === HEADER === */
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      padding: 10px 0;
+      margin-bottom: 5px;
+      border-bottom: 1px dashed var(--amber-light);
+    }
+
+    .logo {
+      height: 40px;
+      filter: drop-shadow(0 0 5px var(--amber-light));
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      text-shadow: 0 0 8px var(--amber-light);
+    }
+
+    #datetime {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* === CATEGORY CARDS === */
+    .category-card {
+      background: rgba(26, 18, 11, 0.6);
+      border: 1px solid var(--amber-light);
+      border-radius: 6px;
+      padding: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .category-title {
+      margin: 0 0 10px 0;
+      padding-bottom: 5px;
+      border-bottom: 1px dashed var(--amber-light);
+      font-size: 1.1rem;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    /* === ICON GRID === */
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 5px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .icon-item:hover {
+      background: rgba(255, 179, 71, 0.1);
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .icon-item i {
+      font-size: 1.5rem;
+      margin-bottom: 3px;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .icon-item span {
+      font-size: 0.8rem;
+      text-align: center;
+    }
+    /* === MINIMALIST CALENDAR === */
+    .calendar {
+      margin-top: auto; /* Pushes to bottom of container */
+      padding: 10px;
+      background: rgba(26, 18, 11, 0.5);
+      border-radius: 6px;
+      border: 1px dashed var(--amber-light);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      text-align: center;
+    }
+
+    .calendar-day {
+      padding: 5px;
+      font-size: 0.8rem;
+    }
+
+    .calendar-day.today {
+      background: var(--amber-light);
+      color: var(--dark-bg);
+      border-radius: 3px;
+      font-weight: bold;
+    }
+    
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 0.8rem;
+      color: var(--amber-light);
+      text-shadow: 0 0 5px var(--amber-light);
+      background: rgba(26, 18, 11, 0.9);
+      backdrop-filter: blur(4px);
+      border-top: 1px dashed var(--amber-light);
+      z-index: 10000;
+    }
+
+    footer a {
+      color: var(--amber-light);
+      text-decoration: none;
+      transition: text-shadow 0.3s ease;
+    }
+
+    footer a:hover {
+      text-shadow: 0 0 8px var(--amber-light);
+    }
+
+    /* Color classes */
+    .social { color: var(--neon-pink); }
+    .dev { color: var(--neon-yellow); }
+    .vr { color: var(--neon-purple); }
+    .local { color: var(--neon-green); }
+    .linux { color: var(--neon-blue); }
+    .email { color: var(--neon-orange); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <img src="4LICED_White.webp" alt="Logo" class="logo">
+    <h1>NEON_DASH</h1>
+    <div id="datetime">[LOADING...]</div>
+  </header>
+
+  <!-- Development -->
+  <div class="category-card">
+    <h3 class="category-title dev">DEV</h3>
+    <div class="icon-grid">
+      <div class="icon-item dev" onclick="window.open('https://github.com', '_blank')">
+        <i class="fab fa-github"></i>
+        <span>GitHub</span>
+      </div>
+      <!-- More dev icons... -->
+    </div>
+  </div>
+
+  <!-- Social -->
+  <div class="category-card">
+    <h3 class="category-title social">SOCIAL</h3>
+    <div class="icon-grid">
+      <div class="icon-item social" onclick="window.open('https://youtube.com', '_blank')">
+        <i class="fab fa-youtube"></i>
+        <span>YouTube</span>
+      </div>
+      <div class="icon-item social" onclick="window.open('https://twitter.com', '_blank')">
+        <i class="fab fa-twitter"></i>
+        <span>Twitter</span>
+      </div>
+      <div class="icon-item social" onclick="window.open('https://bsky.app', '_blank')">
+        <i class="fas fa-cloud"></i>
+        <span>Bluesky</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- VR -->
+  <div class="category-card">
+    <h3 class="category-title vr">VR</h3>
+    <div class="icon-grid">
+      <div class="icon-item vr" onclick="window.open('https://vrchat.com', '_blank')">
+        <i class="fas fa-vr-cardboard"></i>
+        <span>VRChat</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local -->
+  <div class="category-card">
+    <h3 class="category-title local">LOCAL</h3>
+    <div class="icon-grid">
+      <div class="icon-item local" onclick="window.open('http://pi.hole/admin', '_blank')">
+        <i class="fas fa-shield-alt"></i>
+        <span>Pi-hole</span>
+      </div>
+      <div class="icon-item local" onclick="window.open('http://localhost:8000', '_blank')">
+        <i class="fas fa-robot"></i>
+        <span>SillyTavern</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Linux -->
+  <div class="category-card">
+    <h3 class="category-title linux">LINUX</h3>
+    <div class="icon-grid">
+      <div class="icon-item linux" onclick="window.open('https://archlinux.org', '_blank')">
+        <i class="fab fa-linux"></i>
+        <span>Arch</span>
+      </div>
+      <div class="icon-item linux" onclick="window.open('https://fedoraproject.org', '_blank')">
+        <i class="fab fa-redhat"></i>
+        <span>Fedora</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comms -->
+  <div class="category-card">
+    <h3 class="category-title email">COMMS</h3>
+    <div class="icon-grid">
+      <div class="icon-item email" onclick="window.open('https://mail.google.com', '_blank')">
+        <i class="fas fa-envelope"></i>
+        <span>Gmail</span>
+      </div>
+    </div>
+  </div>
+  <!-- New Calendar -->
+  <div class="calendar">
+    <div class="calendar-header">
+      <span id="current-month">July 2024</span>
+      <span id="current-year">2024</span>
+    </div>
+    <div class="calendar-grid" id="calendar-days">
+      <!-- Generated by JS -->
+    </div>
+    </div>
+</div>
+<footer>
+  4liceD © 2025 - <a href="mailto:4liced@4liced.com">Contact: 4liced@4liced.com</a>
+</footer>
+
+<script>
+  // Calendar generation
+  function generateCalendar() {
+    const now = new Date();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    // Set header
+    document.getElementById('current-month').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    document.getElementById('current-year').textContent = now.getFullYear();
+
+    // Get days in month
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+
+    // Generate days
+    let calendarHTML = '';
+
+    // Day names
+    const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    dayNames.forEach(day => {
+      calendarHTML += `<div class="calendar-day">${day}</div>`;
+    });
+
+    // Empty cells
+    for (let i = 0; i < firstDay; i++) {
+      calendarHTML += `<div class="calendar-day"></div>`;
+    }
+
+    // Days of month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const isToday = day === now.getDate();
+      calendarHTML += `<div class="calendar-day ${isToday ? 'today' : ''}">${day}</div>`;
+    }
+
+    document.getElementById('calendar-days').innerHTML = calendarHTML;
+  }
+
+  // Initialize
+  generateCalendar();
+  updateDateTime();
+
+  function updateDateTime() {
+    const now = new Date();
+    document.getElementById('datetime').textContent =
+            `[${now.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})} ${now.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: false})}]`;
+  }
+  setInterval(updateDateTime, 1000);
+</script>
+</body>
+</html>

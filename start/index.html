@@ -313,6 +313,93 @@
       </div>
     </div>
   </div>
+  <!-- DJ -->
+  <div class="category-card" style="
+  background: rgba(26, 18, 11, 0.6);
+  border: 1px solid var(--neon-purple);
+  border-radius: 6px;
+  padding: 12px;
+">
+    <h3 class="category-title" style="
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--neon-purple);
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px var(--neon-purple);
+    color: var(--neon-purple);
+  ">ASCII DJ</h3>
+
+    <div style="
+    background: rgba(0,0,0,0.3);
+    border: 1px dashed var(--neon-blue);
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+  ">
+      <!-- Clickable DJ Face (replaces SPACE bar) -->
+      <pre id="ascii-dj" style="
+      color: var(--neon-pink);
+      font-family: monospace;
+      font-size: 16px;
+      line-height: 1;
+      margin: 0;
+      height: 20px;
+      text-shadow: 0 0 5px var(--neon-blue);
+      cursor: pointer;
+    ">(■_■) Tap to Start</pre>
+
+      <div style="
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 10px;
+    ">
+        <!-- Bass Knob (Speed Control) -->
+        <div id="bass-knob" style="
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--neon-blue) 0% calc(var(--bass-level, 5) * 10%),
+          rgba(255,255,255,0.1) calc(var(--bass-level, 5) * 10%) 100%
+        );
+        cursor: pointer;
+        transition: transform 0.1s;
+      ">
+          <!--<div style="
+          position: absolute;
+          bottom: -18px;
+          width: 100%;
+          text-align: center;
+          font-size: 9px;
+          color: var(--neon-blue);
+        ">BASS</div> -->
+        </div>
+
+        <!-- Treble Knob (Glow Control - NOW WORKING) -->
+        <div id="treble-knob" style="
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--neon-pink) 0% calc(var(--treble-level, 5) * 10%),
+          rgba(255,255,255,0.1) calc(var(--treble-level, 5) * 10%) 100%
+        );
+        cursor: pointer;
+        transition: transform 0.1s;
+      ">
+          <!--<div style="
+          position: absolute;
+          bottom: -18px;
+          width: 100%;
+          text-align: center;
+          font-size: 9px;
+          color: var(--neon-pink);
+        ">GLOW</div>-->
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- New Calendar -->
   <div class="calendar">
     <div class="calendar-header">
@@ -375,6 +462,88 @@
             `[${now.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})} ${now.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: false})}]`;
   }
   setInterval(updateDateTime, 1000);
+  // === FOOLPROOF DJ SCRIPT ===
+  const faces = [
+    '(⌐■_■)',       // Default cool face
+    '( •_•)>⌐■-■',  // Putting on sunglasses
+    '(☉_☉)',        // Surprised
+    '(◕‿◕✿)',       // Cute
+    '( ͡° ͜ʖ ͡°)',    // Lenny
+    '(ง •̀_•́)ง',    // Fighting stance
+    '(╯°□°）╯︵ ┻━┻', // Table flip
+    '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧', // Sparkles
+    '(˵ ͡° ͜ʖ ͡°˵)',  // Sassy
+    '(👁 ͜ʖ👁)',     // Lenny with eyes
+    '(≧∇≦)ﾉ',       // Excited
+    '(ノಠ益ಠ)ノ',    // Angry
+    '(ᵔᴥᵔ)',        // Cute animal
+    '(¬‿¬)',        // Smug
+    '(◠‿◠✿)',       // Happy
+    '(ಥ_ಥ)',        // Crying
+    '(づ￣ ³￣)づ',  // Kissy
+    '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧', // Magical
+    '(•̀ᴗ•́)و',      // Determined
+    '( ˘ ³˘)♥'      // Love
+  ];
+
+  const dj = document.getElementById('ascii-dj');
+  let isPlaying = false;
+  let animSpeed = 500;
+  let animInterval;
+  let currentFace = 0;
+
+  // Click the face to start/stop (mobile-friendly!)
+  dj.addEventListener('click', toggleAnimation);
+
+  function toggleAnimation() {
+    isPlaying = !isPlaying;
+
+    if (isPlaying) {
+      dj.textContent = `${faces[currentFace]} BPM: ${Math.floor(60000/animSpeed)}`;
+      animInterval = setInterval(animateFace, animSpeed);
+    } else {
+      clearInterval(animInterval);
+      dj.textContent = '(■_■) Tap to Start';
+    }
+  }
+
+  function animateFace() {
+    currentFace = (currentFace + 1) % faces.length;
+    dj.textContent = `${faces[currentFace]} BPM: ${Math.floor(60000/animSpeed)}`;
+  }
+
+  // Bass Knob - Controls Speed
+  const bassKnob = document.getElementById('bass-knob');
+  let bassLevel = 5;
+
+  bassKnob.addEventListener('click', () => {
+    bassLevel = bassLevel < 10 ? bassLevel + 1 : 0;
+    bassKnob.style.setProperty('--bass-level', bassLevel);
+    animSpeed = 1000 - (bassLevel * 80); // Faster with higher bass
+
+    if (isPlaying) {
+      clearInterval(animInterval);
+      animInterval = setInterval(animateFace, animSpeed);
+    }
+
+    // Physical feedback
+    bassKnob.style.transform = 'scale(0.9)';
+    setTimeout(() => bassKnob.style.transform = '', 100);
+  });
+
+  // Treble Knob - Controls Glow (NOW WORKING!)
+  const trebleKnob = document.getElementById('treble-knob');
+  let trebleLevel = 5;
+
+  trebleKnob.addEventListener('click', () => {
+    trebleLevel = trebleLevel < 10 ? trebleLevel + 1 : 0;
+    trebleKnob.style.setProperty('--treble-level', trebleLevel);
+    dj.style.textShadow = `0 0 ${5 + trebleLevel}px var(--neon-blue)`;
+
+    // Physical feedback
+    trebleKnob.style.transform = 'scale(0.9)';
+    setTimeout(() => trebleKnob.style.transform = '', 100);
+  });
 </script>
 </body>
 </html>

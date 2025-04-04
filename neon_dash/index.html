@@ -459,7 +459,7 @@
     <div class="terminal-window">
 <span class="terminal-output">⚡ <span style="color:var(--amber-light)">System:</span><br>NEON_DASH v3.1.4</span><br>
 <span class="terminal-output"><span class="terminal-user">visitor@dash</span>:<span class="terminal-output">~/social</span>$
-  <span class="terminal-output">sudo rm -rf /*</span><span class="terminal-cursor">█</span></span> <!-- Isolated cursor -->
+  <span class="terminal-output" id="terminal-command">sudo rm -rf /*</span><span class="terminal-cursor">█</span></span> <!-- Isolated cursor -->
     </pre>
     </div>
   </div>
@@ -597,6 +597,37 @@
     trebleKnob.style.transform = 'scale(0.9)';
     setTimeout(() => trebleKnob.style.transform = '', 100);
   });
+  const commands = [
+    "git commit --message 'oops'",
+    "rm -rf /dev/null",
+    "echo 'Hello World'",
+    ":(){ :|:& };:",  // Fork bomb (don't actually run this!)
+    "echo 'Why is /dev/null always empty??'",
+    "cat meme.jpg | lolcat --spread 69",
+    "ping 127.0.0.1 -c 420",
+    "git push --force origin main",
+    "rm -rf / --no-preserve-root",
+    "echo '404: Vibe Not Found'",
+  ];
+
+  function swapCommand() {
+    const commandElement = document.getElementById("terminal-command");
+    if (!commandElement) return;
+
+    // Get new command (that's different from current)
+    let newCmd;
+    do {
+      newCmd = commands[Math.floor(Math.random() * commands.length)];
+    } while (newCmd === commandElement.textContent && commands.length > 1);
+
+    commandElement.textContent = newCmd;
+  }
+
+  // Change every 3 seconds
+  setInterval(swapCommand, 3000);
+
+  // Run immediately
+  swapCommand();
 </script>
 </body>
 </html>

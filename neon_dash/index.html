@@ -456,7 +456,7 @@
   <!-- New Calendar -->
   <div class="calendar">
     <div class="calendar-header">
-      <span id="current-month">July 2024</span>
+      <span id="current-month">July</span>
       <span id="current-year">2024</span>
     </div>
     <div class="calendar-grid" id="calendar-days">
@@ -475,7 +475,7 @@
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     // Set header
-    document.getElementById('current-month').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    document.getElementById('current-month').textContent = `${monthNames[now.getMonth()]}`;
     document.getElementById('current-year').textContent = now.getFullYear();
 
     // Get days in month

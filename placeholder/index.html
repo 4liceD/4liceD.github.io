@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Orbitron', monospace; background: #000; color: #00ff41; overflow-x: hidden; cursor: none; }
+
+        /* Custom cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #00ff41, #00b300);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s ease;
+        }
+
+        header {
+            padding: 20px;
+            border-bottom: 1px solid #00ff41;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .status {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .transmission, .terminal {
+            background: rgba(0, 255, 65, 0.05);
+            border: 1px solid #00ff41;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+        }
+
+        .prompt { color: #00ff41; font-weight: bold; }
+        .output { margin-left: 10px; margin-bottom: 4px; }
+
+        .hidden-text {
+            color: #111;
+            background: #00ff41;
+            padding: 0 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hidden-text {
+            background: none;
+            color: #00ff41;
+            text-shadow: 0 0 6px #00ff41;
+        }
+
+        .qr-scanner {
+            text-align: center;
+            border: 1px dashed #00ff41;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .qr-placeholder {
+            padding: 10px;
+            border: 1px solid #00ff41;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #00ff41;
+            z-index: 10000;
+        }
+
+        .loading-bar {
+            width: 60%;
+            height: 10px;
+            background: #111;
+            border: 1px solid #00ff41;
+            margin: 10px 0;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: #00ff41;
+            animation: load 2.5s forwards;
+        }
+
+        @keyframes load {
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="signal">⟐⟐⟐</div>
+    <div>ESTABLISHING LINK TO GRID...</div>
+    <div class="loading-bar"><div class="loading-progress"></div></div>
+    <div>CHANNEL SYNC COMPLETE</div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+
+<header>
+    <div class="logo">⟐ HIDDEN CITY UNDERGROUND ⟐</div>
+    <div class="status" id="statusIndicator">STATUS: ACTIVE | SIGNAL: 87% | NODE: LAMBDA-7</div>
+</header>
+
+<main>
+    <!-- Initial Transmission -->
+    <div class="transmission" onclick="decodeMessage(this)">
+        <div class="prompt">CENTRAL@HIDDEN:~$</div>
+        <div class="output">Welcome, operative. You've breached the perimeter.</div>
+        <div class="output">The Underground Movement requires your discretion. The eyes above never sleep.</div>
+        <span class="hidden-text" data-reveal="Welcome to the resistance. Next Node: NODE-Λ7 / ΔX-404">████████████</span>
+    </div>
+
+    <!-- ARG Terminal -->
+    <div class="terminal">
+        <div class="prompt">HIDDEN_CITY_LOG_001:</div>
+        <div class="output">Timestamp: 2025-09-14 22:06:47</div>
+        <div class="output">Location: Undercroft - Sector 7</div>
+        <div class="output">Status: Movement detected. Authorities closing in.</div>
+        <div class="output">Directive: Relay package to contact at Beach Node. Codephrase: "Neon remembers."</div>
+        <div class="coordinates" id="coords">NEXT NODE: LOADING...</div>
+    </div>
+
+    <!-- Interactive Scanner -->
+    <div class="qr-scanner">
+        <h3>SCAN FOR NEXT TRANSMISSION</h3>
+        <div class="qr-placeholder" id="qrTarget" onclick="scanQR()">
+            [SIGNAL NODE]<br>
+            Click to intercept signal
+        </div>
+        <div id="scanResult" style="margin-top: 20px; color: #666;"></div>
+    </div>
+
+    <!-- Hidden Messages -->
+    <div class="transmission" onclick="revealSecret(this)">
+        <div class="prompt">ENCRYPTED_BROADCAST:</div>
+        <div class="output">The windturbine spins for the forgotten. Look where shadows dance longest.</div>
+        <span class="hidden-text" data-reveal="Meeting point: The Hidden Gate at midnight. Bring the artifact.">CLASSIFIED: ACCESS DENIED</span>
+    </div>
+
+    <!-- Dynamic Feed -->
+    <div class="terminal" id="liveFeed">
+        <div class="prompt">LIVE_FEED_ACTIVE:</div>
+        <div class="output" id="feedLine1">Monitoring surface activity...</div>
+        <div class="output" id="feedLine2">No breaches detected.</div>
+    </div>
+</main>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    function decodeMessage(el) {
+        const span = el.querySelector('.hidden-text');
+        span.classList.add('revealed');
+        span.textContent = span.dataset.reveal;
+    }
+
+    function revealSecret(el) {
+        const span = el.querySelector('.hidden-text');
+        span.classList.add('revealed');
+        span.textContent = span.dataset.reveal;
+    }
+
+    function scanQR() {
+        document.getElementById('scanResult').textContent =
+            "Signal locked: NODE-Σ9. Transmission en route...";
+    }
+    
+    function updateLiveFeed() {
+        const feed1 = document.getElementById('feedLine1');
+        const feed2 = document.getElementById('feedLine2');
+
+        const messages = [
+            'Surface patrol increased. Stay dark.',
+            'Artifact transfer confirmed. ETA 22:30.',
+            'Windturbine node compromised. Rerouting.',
+            'New contact established: DJ Love Sense.',
+            'LPD closing perimeter. Evacuate Sector 7.',
+            'Hidden Beach secure. Transmission active.',
+            'Neon signal strong. Resistance grows.',
+            'The Great Server Migration happened here...',
+            "4liceD's blessing opened the gates.",
+            'Hidden Reality raves still echo in the void.',
+            'The balls channel remembers everything.',
+            'Windturbine spins eternal. Never forget.'
+        ];
+
+        const idx1 = Math.floor(Math.random() * messages.length);
+        let idx2 = Math.floor(Math.random() * messages.length);
+        if (idx2 === idx1) idx2 = (idx1 + 1) % messages.length;
+
+        feed1.textContent = messages[idx1];
+        feed2.textContent = messages[idx2];
+    }
+
+    // periodically update feed and sprinkle lore lines
+    setInterval(updateLiveFeed, 5000);
+
+    // occasionally append a lore line as a "transmission"
+    setInterval(() => {
+        const feed = document.getElementById('liveFeed');
+        const line = document.createElement('div');
+        line.className = 'output';
+        feed.appendChild(line);
+        if (feed.children.length > 8) feed.removeChild(feed.children[2]); // prevent overflow
+    }, 15000);
+
+    // Fake loading screen
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+        }, 2500);
+    });
+</script>
+</body>
+</html>

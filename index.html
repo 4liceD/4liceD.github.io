@@ -1,472 +1,558 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4liceD's Links</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>4liceD — Links</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="linktree/favicon.png" type="image/x-icon">
+    <link rel="icon" href="linktree/favicon.png" type="image/png" />
 
     <!-- OpenGraph & Twitter -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://4liced.github.io/">
-    <meta property="og:title" content="4liceD's Links">
-    <meta property="og:description" content="Connect with 4liceD across various platforms">
-    <meta property="og:image" content="https://4liced.github.io/linktree/embed.png">
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://4liced.github.io/">
-    <meta property="twitter:title" content="4liceD's Links">
-    <meta property="twitter:description" content="Connect with 4liceD across various platforms">
-    <meta property="twitter:image" content="https://4liced.github.io/linktree/embed.png">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://4liced.github.io/" />
+    <meta property="og:title" content="4liceD's Links" />
+    <meta property="og:description" content="Connect with 4liceD across various platforms" />
+    <meta property="og:image" content="https://4liced.github.io/linktree/embed.png" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://4liced.github.io/" />
+    <meta property="twitter:title" content="4liceD's Links" />
+    <meta property="twitter:description" content="Connect with 4liceD across various platforms" />
+    <meta property="twitter:image" content="https://4liced.github.io/linktree/embed.png" />
 
-    <!-- Mobile theme color -->
-    <meta name="theme-color" content="#00ffff">
+    <!-- Theme color gets updated at runtime -->
+    <meta name="theme-color" content="#00ffff" id="theme-color-meta" />
 
-    <!-- Preload a couple of assets for quicker first paint -->
-    <link rel="preload" as="image" href="background/1.webp">
-    <link rel="preload" as="image" href="background/2.webp">
-    <link rel="preload" as="image" href="linktree/logo.webp">
-    <link rel="preload" as="image" href="linktree/4LICED_White.webp">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Preload -->
+    <link rel="preload" as="image" href="background/1.webp" />
+    <link rel="preload" as="image" href="background/2.webp" />
+    <link rel="preload" as="image" href="linktree/logo.webp" />
+    <link rel="preload" as="image" href="linktree/4LICED_White.webp" />
+
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Share Tech Mono', monospace !important;
+        :root{
+            --c-cyan-rgb: 0,255,255;
+            --c-mag-rgb: 230,0,255;
+            --c-fg: rgb(var(--c-cyan-rgb));
+            --c-bg: #000;
+            --radius: 14px;
+            --panel: rgba(10,10,15,.5);
+            --neon-shadow: 0 0 0 1px rgba(var(--c-cyan-rgb), .35),
+            0 0 30px rgba(0,100,255,.18),
+            inset 0 0 20px rgba(0,50,100,.35);
         }
-        body {
-            /* Quick fallback so there's something visible before JS swaps */
-            background-image: url('background/1.webp');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-image 1s ease-in-out;
-            color: #0ff !important;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5) !important;
+        .theme-soft{ --c-cyan-rgb: 128,255,215; --c-mag-rgb: 255,121,255; }
+
+        *{ box-sizing: border-box; }
+        html,body{ height:100%; }
+        body{
+            margin:0;
+            font-family:'Share Tech Mono', monospace;
+            color:var(--c-fg);
+            background: var(--c-bg) center/cover fixed;
+            display:grid; place-items:center;
+            overflow-x:hidden;
+            text-shadow:0 0 6px rgba(var(--c-cyan-rgb), .5);
         }
 
-        /* === GLITCHY ANIMATED SCANLINES === */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                    0deg,
-                    rgba(0, 255, 255, 0.2),
-                    rgba(0, 255, 255, 0.2) 2px,
-                    transparent 2px,
-                    transparent 4px
-            );
-            pointer-events: none;
-            z-index: 999;
-            mix-blend-mode: screen;
-            animation:
-                    scanline-drift 8s linear infinite,
-                    scanline-pulse 3s ease-in-out infinite alternate;
-        }
-        @keyframes scanline-drift { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
-        @keyframes scanline-pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        /* Background stack */
+        .bg-stack{ position:fixed; inset:0; z-index:-1; }
+        .bg-slide{ position:absolute; inset:0; background-size:cover; background-position:center;
+            filter:saturate(1.05) contrast(1.05); transition:opacity .9s ease-in-out; }
+        .bg-slide.top{ opacity:1; } .bg-slide.bottom{ opacity:0; }
+        canvas#fx{ position:absolute; inset:0; }
 
-        .container {
-            background: rgba(10, 10, 15, 0.5) !important; /* Darker base */
-            backdrop-filter: blur(8px) contrast(1.1) brightness(0.9);
-            -webkit-backdrop-filter: blur(8px) contrast(1.1) brightness(0.9);
-            border-radius: 8px; /* Sharper corners */
-            padding: 25px;
-            width: 85%;
-            max-width: 600px;
-            text-align: center;
-            box-shadow:
-                    0 0 0 1px rgba(0, 255, 255, 0.3),  /* Inner neon border */
-                    0 0 30px rgba(0, 100, 255, 0.15), /* Outer glow */
-                    inset 0 0 20px rgba(0, 50, 100, 0.3); /* Screen emission */
-            border: none !important;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            z-index: 1000;
+        /* Scanlines overlay */
+        body::after{
+            content:""; position:fixed; inset:0; pointer-events:none; z-index:2;
+            background:repeating-linear-gradient(0deg,
+            rgba(var(--c-cyan-rgb), .18),
+            rgba(var(--c-cyan-rgb), .18) 2px,
+            transparent 2px, transparent 4px);
+            mix-blend-mode:screen;
+            animation:scanline-drift 8s linear infinite, scanline-pulse 3s ease-in-out infinite alternate;
         }
+        @keyframes scanline-drift{0%{transform:translateY(0)}100%{transform:translateY(-4px)}}
+        @keyframes scanline-pulse{0%{opacity:.85}50%{opacity:1}100%{opacity:.85}}
 
-        /* === CRT SCREEN TEXTURE OVERLAY === */
-        .container::before {
-            content: "";
-            position: absolute;
-            inset: 0;
+        /* Panel */
+        .container{
+            width:min(680px,92vw);
+            max-height:90vh; overflow:auto;
+            background:var(--panel);
+            backdrop-filter: blur(10px) contrast(1.1) brightness(.9);
+            -webkit-backdrop-filter: blur(10px) contrast(1.1) brightness(.9);
+            border-radius:var(--radius);
+            padding:26px 22px 18px;
+            box-shadow:var(--neon-shadow);
+            position:relative;
+            transform-style:preserve-3d;
+            will-change:transform;
+        }
+        .container::before{
+            content:""; position:absolute; inset:0; border-radius:var(--radius); pointer-events:none;
             background:
-                    radial-gradient(circle at center, transparent 60%, rgba(0, 50, 100, 0.1) 100%),
-                    repeating-linear-gradient(
-                            0deg,
-                            rgba(0, 255, 255, 0.2),
-                            rgba(0, 255, 255, 0.2) 2px,
-                            transparent 2px,
-                            transparent 4px
-                    );
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            border-radius: 8px;
+                    radial-gradient(120% 80% at 50% 0%, rgba(var(--c-cyan-rgb), .12), transparent),
+                    repeating-linear-gradient(0deg, rgba(var(--c-cyan-rgb), .16), rgba(var(--c-cyan-rgb), .16) 2px, transparent 2px, transparent 4px);
+            mix-blend-mode:overlay;
         }
 
-        /* Keep YOUR logo approach (no circular crop, image is in CSS) */
-        .logo {
-            width: 200px;
-            height: 180px;
-            margin: 0 auto 1px;
-            background-image: url('linktree/logo.webp');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-radius: 20%;
-            filter: drop-shadow(0 0 8px rgba(0,255,255,0.8));
-        }
-        .logo2 {
-            width: 220px;
-            height: 50px;
-            margin: 0 auto 10px;
-            background-image: url('linktree/4LICED_White.webp');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-radius: 20%;
-            filter: drop-shadow(0 0 6px rgba(0,255,255,0.7));
-        }
+        /* Branding */
+        .logo{ width:200px; height:180px; margin:2px auto 4px;
+            background:center/contain no-repeat url('linktree/logo.webp');
+            filter: drop-shadow(0 0 10px rgba(var(--c-cyan-rgb), .8)); }
+        .logo2{ width:220px; height:50px; margin:0 auto 12px;
+            background:center/contain no-repeat url('linktree/4LICED_White.webp');
+            filter: drop-shadow(0 0 6px rgba(var(--c-cyan-rgb), .7)); }
 
-        #description {
-            color: #0ff;
-            margin: 10px 0 20px;
-            min-height: 1.2em;
-            font-size: 1.1em;
-            opacity: 0.9;
-            transition: opacity 0.5s ease; /* smooth fade-swap */
-        }
+        /* Stacked greeting + descriptor */
+        .row{ display:flex; flex-direction:column; align-items:center; gap:6px; margin:10px 0 18px; }
+        #description{ opacity:.95; font-size:1.05rem; min-height:1.2em; transition:opacity .45s ease; }
+        .chip{ border:1px solid rgba(var(--c-cyan-rgb), .35); padding:4px 10px; border-radius:999px;
+            box-shadow:0 0 12px rgba(var(--c-cyan-rgb), .18) inset; font-size:.9rem; opacity:.85; }
 
-        .links {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 4px;
+        /* Links */
+        .links{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px; }
+        @media (max-width: 620px){ .links{ grid-template-columns:1fr; } }
+        .link{
+            display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff;
+            background: rgba(var(--c-mag-rgb), .16);
+            border:1px solid rgba(var(--c-mag-rgb), .4);
+            padding:14px 16px; border-radius:12px;
+            box-shadow:0 0 10px rgba(var(--c-mag-rgb), .2);
+            transition: transform .15s ease, box-shadow .2s ease, background .15s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        .link {
-            background: rgba(230, 0, 255, 0.15) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #fff !important;
-            padding: 13px 17px;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(230, 0, 255, 0.4) !important;
-            margin: 5px 0;
-            box-shadow: 0 0 10px rgba(230, 0, 255, 0.2) !important;
-        }
-        .link-icon {
-            width: 22px;
-            height: 22px;
-            margin-right: 14px;
-            opacity: 1;
-        }
-        .link:hover {
-            background: rgba(230, 0, 255, 0.25) !important;
-            border: 1px solid rgba(230, 0, 255, 0.5) !important;
-            transform: scale(1.03);
-            box-shadow: 0 0 20px rgba(230, 0, 255, 0.4) !important;
-        }
-        /* Subtle RGB “glitch” on hover text */
-        .link:hover span {
-            position: relative;
-            animation: glitch-text 0.3s steps(2, end) infinite;
-            text-shadow: 2px 0 red, -2px 0 blue;
-        }
-        @keyframes glitch-text {
-            0% { text-shadow: 2px 0 red, -2px 0 blue; }
-            50% { text-shadow: -2px 0 red, 2px 0 blue; }
-            100% { text-shadow: 2px 0 red, -2px 0 blue; }
-        }
+        .link:hover{ transform: translateY(-1px) scale(1.02); box-shadow:0 0 22px rgba(var(--c-mag-rgb), .4); background: rgba(var(--c-mag-rgb), .26); }
+        .link:active{ transform: translateY(1px) scale(.98); }
+        .link:focus-visible{ outline:3px solid rgba(var(--c-cyan-rgb), .7); outline-offset:2px; }
+        .link>img{ width:22px; height:22px; opacity:.95; flex:0 0 auto; }
+        .link>span{ flex:1; letter-spacing:.2px; }
+        .link:hover span{ position:relative; animation: glitch-text .35s steps(2,end) infinite; text-shadow:2px 0 red, -2px 0 blue; }
+        @keyframes glitch-text{0%{text-shadow:2px 0 red, -2px 0 blue}50%{text-shadow:-2px 0 red, 2px 0 blue}100%{text-shadow:2px 0 red, -2px 0 blue}}
 
-        .link:active {
-            background: rgba(230, 0, 255, 0.3) !important;
-            transform: translateY(2px);
-            box-shadow: 0 0 15px rgba(230, 0, 255, 0.3) !important;
+        /* CTA */
+        .hidden-reality-link{
+            grid-column:1/-1; display:flex; align-items:center; gap:12px;
+            padding:16px 18px; border-radius:12px; color:#fff; text-decoration:none;
+            background: rgba(var(--c-cyan-rgb), .18); border:1px solid rgba(var(--c-cyan-rgb), .35);
+            box-shadow:0 0 14px rgba(var(--c-cyan-rgb), .18);
+            transition: transform .15s ease, box-shadow .2s ease; font-weight:600;
         }
-        .hidden-reality-link {
-            background: rgba(0, 255, 255, 0.2) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #fff !important;
-            padding: 15px 20px;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(0, 255, 255, 0.3) !important;
-            margin: 25px 0;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.15) !important;
-            font-weight: 600;
-            animation: pulse 2s infinite alternate !important;
-        }
-        .hidden-reality-link:hover {
-            background: rgba(0, 255, 255, 0.3) !important;
-            border: 1px solid rgba(0, 255, 255, 0.4) !important;
-            transform: scale(1.03);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.25) !important;
-        }
-        @keyframes pulse { from { opacity: 0.9; } to { opacity: 1; } }
+        .hidden-reality-link:hover{ transform: translateY(-1px) scale(1.02); box-shadow:0 0 22px rgba(var(--c-cyan-rgb), .4); }
+        .hidden-reality-link img{ width:22px; height:22px; }
 
-        .footer {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            padding: 5px 0;
-            box-shadow:
-                    0 0 0 1px rgba(0, 255, 255, 0.3),
-                    0 0 30px rgba(0, 100, 255, 0.15),
-                    inset 0 0 20px rgba(0, 50, 100, 0.3);
-            background: rgba(10, 10, 15, 0.85) !important;
-            backdrop-filter: blur(8px) contrast(1.1) brightness(0.9);
-            -webkit-backdrop-filter: blur(8px) contrast(1.1) brightness(0.9);
-            border-radius: 0px;
-            text-align: center;
-            color: #0ff !important;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.7) !important;
-            z-index: 1001;
-        }
-        .footer::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                    radial-gradient(circle at center, transparent 60%, rgba(0, 50, 100, 0.1) 100%),
-                    repeating-linear-gradient(
-                            0deg,
-                            rgba(0, 255, 255, 0.2),
-                            rgba(0, 255, 255, 0.2) 2px,
-                            transparent 2px,
-                            transparent 4px
-                    );
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            border-radius: 0px;
-        }
+        /* Footer */
+        .footer{ position:fixed; inset:auto 0 0 0; padding:6px 10px; text-align:center;
+            background:rgba(10,10,15,.86);
+            backdrop-filter: blur(8px) contrast(1.1) brightness(.9);
+            -webkit-backdrop-filter: blur(8px) contrast(1.1) brightness(.9);
+            box-shadow:var(--neon-shadow); z-index:3; }
 
-        @media (max-width: 600px) {
-            .container { width: 90%; padding-top: 30px; }
-            .links { grid-template-columns: 1fr; }
+        /* Toolbar (icons only) */
+        .toolbar{ position:fixed; top:12px; right:12px; display:flex; gap:8px; z-index:4; }
+        .btn{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px;
+            border:1px solid rgba(var(--c-cyan-rgb), .35); background:rgba(10,10,15,.6);
+            color: rgb(var(--c-cyan-rgb)); border-radius:999px; text-decoration:none;
+            box-shadow:0 0 10px rgba(var(--c-cyan-rgb), .18) inset; cursor:pointer; user-select:none;
+            font-size:18px; line-height:1; }
+        .btn[aria-pressed="true"]{ box-shadow:0 0 0 2px rgba(var(--c-cyan-rgb), .55), 0 0 14px rgba(var(--c-cyan-rgb), .35) inset; }
+
+        /* Intro overlay */
+        #intro{ position:fixed; inset:0; display:grid; place-items:center; background:#000; z-index:10; }
+        #intro .inner{ text-align:center; color: rgb(var(--c-cyan-rgb)); }
+        #intro .mark{ width:min(240px,70vw); aspect-ratio: 4 / 3; margin:0 auto 10px;
+            background:center/contain no-repeat url('linktree/logo.webp');
+            filter: drop-shadow(0 0 20px rgba(var(--c-cyan-rgb), .8));
+            animation:intro-pop .6s cubic-bezier(.2,.8,.2,1) both; }
+        #intro p{ opacity:.85; margin:0; animation:fade-in .9s .2s both; }
+        #intro .tap{ margin-top:8px; font-size:.9rem; opacity:.7; }
+        @keyframes intro-pop{ 0%{ transform:scale(.8); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
+        @keyframes fade-in{ from{ opacity:0 } to{ opacity:1 } }
+
+        @media (prefers-reduced-motion: reduce){
+            .bg-slide{ transition:none } body::after{ animation:none } .container{ transition:none }
         }
     </style>
 </head>
 <body>
-<div class="footer">4liceD © 2025 - Contact: 4liced@4liced.com</div>
+<!-- Background stack -->
+<div class="bg-stack" aria-hidden="true">
+    <div class="bg-slide top" id="bgA" style="background-image:url('background/1.webp')"></div>
+    <div class="bg-slide bottom" id="bgB" style="background-image:url('background/2.webp')"></div>
+    <canvas id="fx"></canvas>
+</div>
 
-<div class="container">
-    <div class="logo"></div>
-    <div class="logo2"></div>
+<!-- Toolbar -->
+<div class="toolbar" role="toolbar" aria-label="Utilities">
+    <button class="btn" id="themeToggle" title="Toggle theme" aria-pressed="false">⚡</button>
+    <button class="btn" id="soundToggle" title="SFX" aria-pressed="true">🔊</button>
+    <button class="btn" id="ambToggle" title="Ambience" aria-pressed="false">🌌</button>
+    <button class="btn" id="shareAll" title="Share">↗</button>
+</div>
 
-    <p id="description">Neurofunk Enjoyer</p>
+<!-- Footer -->
+<div class="footer">4liceD © 2025 — Contact: <a href="mailto:4liced@4liced.com" style="color:inherit">4liced@4liced.com</a></div>
 
-    <a href="https://hidden-reality.github.io/" class="hidden-reality-link" target="_blank" rel="noopener">
-        <img src="https://raw.githubusercontent.com/Hidden-Reality/Hidden-Reality.github.io/main/linktree/favicon.png" alt="Hidden Reality" class="link-icon">
-        <span>Founder of Hidden Reality</span>
-    </a>
-
-    <div class="links">
-        <a href="https://vrc.group/4CD.4060" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=vrchat.com" alt="VRChat" class="link-icon">
-            <span>VRChat Group</span>
-        </a>
-        <a href="https://x.com/4liceD_" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=x.com" alt="X (Twitter)" class="link-icon">
-            <span>X (Twitter)</span>
-        </a>
-        <a href="https://bsky.app/profile/4liced.com" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=bsky.app" alt="Bluesky" class="link-icon">
-            <span>Bluesky</span>
-        </a>
-        <a rel="me" href="https://mastodon.gamedev.place/@AliceD" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=mastodon.gamedev.place" alt="Mastodon" class="link-icon">
-            <span>Mastodon</span>
-        </a>
-        <a href="https://www.twitch.tv/4licedj" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=twitch.tv" alt="Twitch" class="link-icon">
-            <span>Twitch</span>
-        </a>
-        <a href="https://www.mixcloud.com/4liceD/" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=mixcloud.com" alt="Mixcloud" class="link-icon">
-            <span>Mixcloud</span>
-        </a>
-        <a href="https://www.instagram.com/4liced/" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=instagram.com" alt="Instagram" class="link-icon">
-            <span>Instagram</span>
-        </a>
-        <a href="https://www.youtube.com/@4liced_" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=youtube.com" alt="YouTube" class="link-icon">
-            <span>YouTube</span>
-        </a>
-        <a href="https://www.tiktok.com/@4liced" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=tiktok.com" alt="TikTok" class="link-icon">
-            <span>TikTok</span>
-        </a>
-        <a href="https://aliced.artstation.com" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=artstation.com" alt="ArtStation" class="link-icon">
-            <span>ArtStation</span>
-        </a>
-        <a href="https://aliced.booth.pm" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=booth.pm" alt="Booth" class="link-icon">
-            <span>Booth</span>
-        </a>
-        <a href="rtspt://stream.vrcdn.live/live/4liced" class="link" id="vr-stream-link" data-original-text="VRCDN">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=vrcdn.live" alt="VRCDN" class="link-icon">
-            <span>VRCDN</span>
-        </a>
-        <a href="https://discord.gg/7peUVemWgS" class="link" target="_blank" rel="noopener">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=discord.com" alt="Discord" class="link-icon">
-            <span>Support Discord</span>
-        </a>
-        <a href="#" id="secret-link" class="link">Click for a surprise!</a>
+<!-- Intro overlay -->
+<div id="intro">
+    <div class="inner">
+        <div class="mark" aria-hidden="true"></div>
+        <p>Booting Hidden Reality Node…</p>
+        <p class="tap">Tap or press any key to start</p>
     </div>
 </div>
 
+<!-- Main -->
+<main class="container" id="panel" aria-live="polite">
+    <div class="logo" role="img" aria-label="4liceD logo"></div>
+    <div class="logo2" role="img" aria-label="4liceD wordmark"></div>
+
+    <div class="row">
+        <span id="greeting" class="chip" aria-hidden="true"></span>
+        <p id="description">Neurofunk Enjoyer</p>
+    </div>
+
+    <a href="https://hidden-reality.github.io/" class="hidden-reality-link" target="_blank" rel="noopener" aria-label="Founder of Hidden Reality — open in new tab">
+        <img src="https://raw.githubusercontent.com/Hidden-Reality/Hidden-Reality.github.io/main/linktree/favicon.png" alt="Hidden Reality" />
+        <span>Founder of Hidden Reality</span>
+    </a>
+
+    <section class="links" id="links" aria-label="Main links">
+        <a href="https://vrc.group/4CD.4060" class="link" target="_blank" rel="noopener" data-title="VRChat Group">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=vrchat.com" alt="VRChat" />
+            <span>VRChat Group</span>
+        </a>
+        <a href="https://x.com/4liceD_" class="link" target="_blank" rel="noopener" data-title="X (Twitter)">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=x.com" alt="X" />
+            <span>X (Twitter)</span>
+        </a>
+        <a href="https://bsky.app/profile/4liced.com" class="link" target="_blank" rel="noopener" data-title="Bluesky">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=bsky.app" alt="Bluesky" />
+            <span>Bluesky</span>
+        </a>
+        <a rel="me" href="https://mastodon.gamedev.place/@AliceD" class="link" target="_blank" rel="noopener" data-title="Mastodon">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=mastodon.gamedev.place" alt="Mastodon" />
+            <span>Mastodon</span>
+        </a>
+        <a href="https://www.twitch.tv/4licedj" class="link" target="_blank" rel="noopener" data-title="Twitch">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=twitch.tv" alt="Twitch" />
+            <span>Twitch</span>
+        </a>
+        <a href="https://www.mixcloud.com/4liceD/" class="link" target="_blank" rel="noopener" data-title="Mixcloud">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=mixcloud.com" alt="Mixcloud" />
+            <span>Mixcloud</span>
+        </a>
+        <a href="https://www.instagram.com/4liced/" class="link" target="_blank" rel="noopener" data-title="Instagram">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=instagram.com" alt="Instagram" />
+            <span>Instagram</span>
+        </a>
+        <a href="https://www.youtube.com/@4liced_" class="link" target="_blank" rel="noopener" data-title="YouTube">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=youtube.com" alt="YouTube" />
+            <span>YouTube</span>
+        </a>
+        <a href="https://www.tiktok.com/@4liced" class="link" target="_blank" rel="noopener" data-title="TikTok">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=tiktok.com" alt="TikTok" />
+            <span>TikTok</span>
+        </a>
+        <a href="https://aliced.artstation.com" class="link" target="_blank" rel="noopener" data-title="ArtStation">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=artstation.com" alt="ArtStation" />
+            <span>ArtStation</span>
+        </a>
+        <a href="https://aliced.booth.pm" class="link" target="_blank" rel="noopener" data-title="Booth">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=booth.pm" alt="Booth" />
+            <span>Booth</span>
+        </a>
+        <a href="rtspt://stream.vrcdn.live/live/4liced" class="link" id="vr-stream-link" data-original-text="VRCDN" data-title="VRCDN">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=vrcdn.live" alt="VRCDN" />
+            <span>VRCDN</span>
+        </a>
+        <a href="https://discord.gg/7peUVemWgS" class="link" target="_blank" rel="noopener" data-title="Support Discord">
+            <img src="https://www.google.com/s2/favicons?sz=64&domain=discord.com" alt="Discord" />
+            <span>Support Discord</span>
+        </a>
+        <a href="#" id="secret-link" class="link" data-title="Secret">Click for a surprise!</a>
+    </section>
+</main>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // === Background image slideshow ===
-        const backgroundImages = [
-            'background/1.webp','background/2.webp','background/3.webp','background/4.webp','background/5.webp',
-            'background/6.webp','background/7.webp','background/8.webp','background/9.webp','background/10.webp'
-        ];
-        let currentImageIndex = 0;
+    const $ = sel => document.querySelector(sel);
+    const byId = id => document.getElementById(id);
+    const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const AUTO_AMBIENCE = true; // ambience starts after first gesture (intro)
 
-        function changeBackgroundImage() {
-            const newImage = new Image();
-            newImage.onload = function() {
-                document.body.style.backgroundImage = `url('${backgroundImages[currentImageIndex]}')`;
-                currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
-            };
-            newImage.onerror = function() {
-                console.error(`Failed to load image: ${backgroundImages[currentImageIndex]}`);
-                currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
-                changeBackgroundImage();
-            };
-            newImage.src = backgroundImages[currentImageIndex];
-        }
-
-        // Kick off and rotate every 5s
-        changeBackgroundImage();
-        setInterval(changeBackgroundImage, 5000);
-
-        // Lazy-preload the rest after load (so future swaps are instant)
-        window.addEventListener('load', () => {
-            backgroundImages.slice(2).forEach(src => {
-                const img = new Image();
-                img.src = src;
-            });
+    /* Theme toggle */
+    (function theme(){
+        const toggle=byId('themeToggle'); const meta=$('#theme-color-meta');
+        function apply(){ meta.setAttribute('content',
+            getComputedStyle(document.documentElement).getPropertyValue('--c-fg').trim()||'rgb(0,255,255)'); }
+        toggle.addEventListener('click', ()=>{
+            document.documentElement.classList.toggle('theme-soft');
+            toggle.setAttribute('aria-pressed', String(toggle.getAttribute('aria-pressed')!=='true'));
+            apply(); AudioFX.play('ack'); navigator.vibrate?.(8);
         });
+        apply();
+    })();
 
-        // === Glitchy fade description rotation ===
-        const descriptions = [
-            "DJ extraordinaire",
-            "3D Artist",
-            "VR enthusiast",
-            "Jump Up's Worst Nightmare",
-            "German Engineering at its Finest",
-            "Professional Avatar Breaker",
-            "Secretly a Stack of Shaders in a Trenchcoat",
-            "Certified VRChat Gremlin",
-            "Neurofunk Enjoyer"
-        ];
-        let currentDescIndex = 0;
-        const descEl = document.getElementById('description');
-        setInterval(() => {
-            descEl.style.opacity = 0;
-            setTimeout(() => {
-                descEl.textContent = descriptions[currentDescIndex];
-                descEl.style.opacity = 1;
-                currentDescIndex = (currentDescIndex + 1) % descriptions.length;
-            }, 500);
-        }, 3000);
-
-        // Matrix-style typing for <h1> if you ever add one (safe no-op otherwise)
-        const header = document.querySelector('h1');
-        if (header) {
-            const originalText = header.textContent;
-            header.textContent = '';
-            let i = 0;
-            const typing = setInterval(() => {
-                header.textContent += originalText[i];
-                i++;
-                if (i >= originalText.length) clearInterval(typing);
-            }, 100);
+    /* Background slideshow */
+    (function bg(){
+        const images=['background/1.webp','background/2.webp','background/3.webp','background/4.webp','background/5.webp','background/6.webp','background/7.webp','background/8.webp','background/9.webp','background/10.webp'];
+        let i=0, topA=true; const A=byId('bgA'), B=byId('bgB');
+        function swap(){
+            const next=images[i=(i+1)%images.length]; const img=new Image();
+            img.onload=()=>{ const show=topA?B:A, hide=topA?A:B;
+                show.style.backgroundImage=`url('${next}')`;
+                show.classList.add('top'); show.classList.remove('bottom');
+                hide.classList.add('bottom'); hide.classList.remove('top');
+                topA=!topA; };
+            img.src=next;
         }
+        swap(); const id=setInterval(swap, 5000); if(prefersReduced) clearInterval(id);
+        addEventListener('load', ()=> images.slice(2).forEach(src=>{ const im=new Image(); im.src=src; }));
+    })();
 
-        // Random link micro-glitches
-        setInterval(() => {
-            document.querySelectorAll('.link').forEach(link => {
-                if (Math.random() > 0.97) {
-                    link.style.transform = 'translateX(2px)';
-                    setTimeout(() => link.style.transform = '', 100);
+    /* FX Canvas: neon grid */
+    ;(function fx(){
+        const c=byId('fx'), ctx=c.getContext('2d');
+        let w=c.width=innerWidth, h=c.height=innerHeight, pts=[];
+        function reset(){ w=c.width=innerWidth; h=c.height=innerHeight; pts=[];
+            const cols=Math.round(w/120), rows=Math.round(h/120);
+            for(let y=0;y<=rows;y++) for(let x=0;x<=cols;x++)
+                pts.push({x:(x/cols)*w,y:(y/rows)*h,z:Math.random()*6.28});
+        }
+        reset(); addEventListener('resize', reset,{passive:true});
+        let t=0,mx=0,my=0;
+        addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
+        addEventListener('deviceorientation',e=>{ if(e.gamma!=null){ mx=(e.gamma+45)/90*w; my=(e.beta+45)/90*h; }});
+        function loop(){
+            if(prefersReduced) return;
+            t+=.012; ctx.clearRect(0,0,w,h); ctx.globalCompositeOperation='lighter';
+            for(const p of pts){
+                const sway=Math.sin(t+p.z)*6;
+                const px=p.x+(mx-w/2)*.02+sway, py=p.y+(my-h/2)*.02+Math.cos(t+p.z)*6;
+                ctx.fillStyle='rgba(0,255,255,.12)'; ctx.beginPath(); ctx.arc(px,py,1.4,0,6.283); ctx.fill();
+            }
+            ctx.strokeStyle='rgba(230,0,255,.09)';
+            for(let i=0;i<pts.length;i+=2){
+                const a=pts[i], b=pts[i+1]; if(!b) break;
+                const ax=a.x+(mx-w/2)*.02+Math.sin(t+a.z)*6, ay=a.y+(my-h/2)*.02+Math.cos(t+a.z)*6;
+                const bx=b.x+(mx-w/2)*.02+Math.sin(t+b.z)*6, by=b.y+(my-h/2)*.02+Math.cos(t+b.z)*6;
+                ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
+            }
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+    })();
+
+    /* Parallax tilt */
+    (function tilt(){
+        const el=byId('panel'); let rx=0,ry=0;
+        function onMove(x,y){
+            const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+            ry=(x-cx)/r.width*6; rx=-(y-cy)/r.height*6;
+        }
+        addEventListener('pointermove',e=>onMove(e.clientX,e.clientY),{passive:true});
+        addEventListener('deviceorientation', e=>{ if(e.gamma!=null) onMove((e.gamma+45)/90*innerWidth,(e.beta+45)/90*innerHeight); });
+        function anim(){ el.style.transform=`rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`; requestAnimationFrame(anim); }
+        if(!prefersReduced) requestAnimationFrame(anim);
+    })();
+
+    /* Greeting + descriptors */
+    (function text(){
+        const desc=byId('description'); const chip=byId('greeting');
+        const list=['DJ extraordinaire','3D Artist','VR enthusiast',"Jump Up\'s Worst Nightmare",'German Engineering at its Finest','Professional Avatar Breaker','Stack of Shaders in a Trenchcoat','Certified VRChat Gremlin','Neurofunk Enjoyer'];
+        let i=0;
+        setInterval(()=>{ desc.style.opacity=0; setTimeout(()=>{ desc.textContent=list[i=(i+1)%list.length]; desc.style.opacity=1; },420); }, 2800);
+        const hr=new Date().getHours();
+        chip.textContent = hr<5?'Good night, runner': hr<12?'Good morning, runner': hr<18?'Good afternoon, runner':'Good evening, runner';
+    })();
+
+    /* Share / copy */
+    (function share(){
+        const btn=byId('shareAll');
+        btn.addEventListener('click', async()=>{
+            const data={title:"4liceD's Links", text:'Catch me here →', url:location.href};
+            if(navigator.share){ try{ await navigator.share(data); }catch(_){} }
+            else { await navigator.clipboard.writeText(data.url); toast('Link copied'); }
+            AudioFX.play('ack');
+        });
+        document.querySelectorAll('.link').forEach(a=>{
+            let t; const start=()=>{ t=setTimeout(async()=>{ await navigator.clipboard.writeText(a.href); toast('Copied '+(a.dataset.title||'link')); navigator.vibrate?.(12); AudioFX.play('gliss'); }, 420); };
+            const clear=()=>clearTimeout(t);
+            a.addEventListener('pointerdown', start); a.addEventListener('pointerup', clear); a.addEventListener('pointerleave', clear);
+            a.addEventListener('click', ()=> AudioFX.play('ping'));
+        });
+    })();
+
+    /* VRCDN click-to-copy */
+    (function vrcdn(){
+        const link=byId('vr-stream-link'); if(!link) return;
+        link.addEventListener('click', async(e)=>{
+            e.preventDefault(); const span=link.querySelector('span'); const original=span.textContent;
+            try{ await navigator.clipboard.writeText(link.href); span.textContent='Copied!'; navigator.vibrate?.(8); AudioFX.play('gliss'); }
+            catch{ span.textContent='Failed to copy'; }
+            setTimeout(()=> span.textContent=original, 1400);
+        });
+    })();
+
+    /* Secret / Konami */
+    (function secret(){
+        const el=byId('secret-link');
+        const facts=['Bananas are berries, strawberries are not.','Shortest war ever? 38 minutes.',"Yell for ~8 years to heat a coffee.","Hidden Reality used to be 'Digital Rabbithole'.","AliceD is a VR world creator too.","AliceD's cap is a lore archive.",'Her gear once tried to take over the rave.','Got lost in her own VR world for 3 days (research).','Rumor: a secret room opens only on leap years.'];
+        let clicks=0; function show(){ alert(facts[Math.floor(Math.random()*facts.length)]); }
+        el.addEventListener('click',(e)=>{
+            e.preventDefault(); clicks++;
+            if(clicks===3){ document.body.style.animation='glitch .3s linear infinite'; setTimeout(()=> document.body.style.animation='', 1000); AudioFX.play('neg'); }
+            if(clicks===5){ window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ','_blank'); clicks=0; } else { show(); }
+        });
+        const seq=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']; let buf=[];
+        addEventListener('keydown', (e)=>{
+            buf.push(e.key); buf = buf.slice(-10);
+            if(seq.every((k,i)=>buf[i]===k)){ document.documentElement.style.setProperty('--c-mag-rgb','255,42,209'); toast('Konami mode!'); AudioFX.play('ack'); }
+        });
+        const style=document.createElement('style');
+        style.textContent='@keyframes glitch{0%{filter:hue-rotate(0)}25%{filter:hue-rotate(40deg)}50%{filter:hue-rotate(-40deg)}75%{filter:hue-rotate(20deg)}100%{filter:hue-rotate(0)}}';
+        document.head.appendChild(style);
+    })();
+
+    /* Micro-glitches */
+    setInterval(()=>{ document.querySelectorAll('.link').forEach(l=>{ if(Math.random()>0.965){ const t=l.style.transform; l.style.transform='translateX(2px)'; setTimeout(()=> l.style.transform=t, 100); } }); }, 3000);
+
+    /* Toasts */
+    (function toastInit(){
+        const host=document.createElement('div'); host.style.position='fixed'; host.style.top='10px'; host.style.left='50%'; host.style.transform='translateX(-50%)'; host.style.zIndex='9999'; document.body.appendChild(host);
+        window.toast=(msg)=>{ const n=document.createElement('div'); n.textContent=msg; n.style.margin='6px 0'; n.style.padding='8px 12px'; n.style.borderRadius='999px'; n.style.border='1px solid rgba(var(--c-cyan-rgb), .4)'; n.style.background='rgba(10,10,15,.8)'; n.style.color='rgb(var(--c-cyan-rgb))'; n.style.boxShadow='0 0 12px rgba(var(--c-cyan-rgb), .18) inset'; n.style.font='14px Share Tech Mono, monospace'; n.style.opacity='0'; n.style.transition='opacity .2s ease, transform .2s ease'; host.appendChild(n);
+            requestAnimationFrame(()=>{ n.style.opacity='1'; n.style.transform='translateY(0)'; });
+            setTimeout(()=>{ n.style.opacity='0'; n.style.transform='translateY(-6px)'; setTimeout(()=> host.removeChild(n), 200); }, 1600);
+        }
+    })();
+
+    /* ====== Audio: soft LCARS SFX + ambience with random console clicks ====== */
+    const AudioFX = (()=> {
+        const ref = { ctx:null, master:null, sfx:null, amb:null, muted:false, ambOn:false };
+        const ensure = ()=>{ if(ref.ctx) return ref.ctx;
+            const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null;
+            const ctx=new AC(); const master=ctx.createGain(), sfx=ctx.createGain(), amb=ctx.createGain();
+            master.gain.value=0.9; sfx.gain.value=0.9; amb.gain.value=0.5;
+            sfx.connect(master); amb.connect(master); master.connect(ctx.destination);
+            Object.assign(ref,{ctx,master,sfx,amb}); return ctx;
+        };
+        const resume = async()=>{ const c=ensure(); try{ if(c&&c.state==='suspended') await c.resume(); }catch(_){} return c; };
+        const now = ()=> ensure()?.currentTime||0;
+        const bandpass=(f=1500,Q=10)=>{ const c=ensure(); const bi=c.createBiquadFilter(); bi.type='bandpass'; bi.frequency.value=f; bi.Q.value=Q; return bi; };
+        const env=(node,a=0.003,r=0.14,lvl=0.18,dest=ref.sfx)=>{ const c=ensure(); const g=c.createGain(); g.gain.setValueAtTime(0, now()); g.gain.linearRampToValueAtTime(ref.muted?0:lvl, now()+a); g.gain.exponentialRampToValueAtTime(0.0001, now()+a+r); node.connect(g).connect(dest); return g; };
+        const osc=(type='sine',f=1200)=>{ const c=ensure(); const o=c.createOscillator(); o.type=type; o.frequency.setValueAtTime(f, now()); return o; };
+        const noise=(seconds=1)=>{ const c=ensure(); const len=seconds*c.sampleRate; const buf=c.createBuffer(1,len,c.sampleRate); const d=buf.getChannelData(0); let last=0; for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+0.02*w)/(1+0.02); d[i]=last; } const n=c.createBufferSource(); n.buffer=buf; return n; };
+
+        function ping(){ const o=osc('sine',1500), bp=bandpass(1500,10); o.connect(bp); env(bp,0.002,0.12,0.14); o.start(); o.stop(now()+0.12); }
+        function gliss(){ const o=osc('sine',1100), bp=bandpass(1400,12); o.connect(bp); env(bp,0.002,0.16,0.16); o.frequency.exponentialRampToValueAtTime(1800, now()+0.14); o.start(); o.stop(now()+0.18); }
+        function ack(){ const c=ensure(); const start=now(); [1200,1600].forEach((f,i)=>{ const o=osc('sine',f), bp=bandpass(f,9); o.connect(bp); const g=c.createGain(); g.gain.setValueAtTime(0, start+i*0.06); g.gain.linearRampToValueAtTime(ref.muted?0:0.16, start+i*0.06+0.01); g.gain.exponentialRampToValueAtTime(0.0001, start+i*0.06+0.12); bp.connect(g).connect(ref.sfx); o.start(start+i*0.06); o.stop(start+i*0.2); }); }
+        function neg(){ const o=osc('sine',280), bp=bandpass(300,6); o.connect(bp); env(bp,0.004,0.22,0.12); o.frequency.linearRampToValueAtTime(180, now()+0.18); o.start(); o.stop(now()+0.24); }
+
+        // Ambience nodes + random chirps
+        let amb = null;
+        let chirpTimer = null;
+
+        const scheduleChirp = ()=>{
+            if (!amb || !ref.ambOn) return;
+            const delay = 4000 + Math.random()*8000; // 4–12s
+            chirpTimer = setTimeout(()=>{
+                if (!document.hidden && !ref.muted && ref.ambOn) {
+                    (Math.random()<0.6 ? ping : gliss)();
                 }
-            });
-        }, 3000);
+                scheduleChirp();
+            }, delay);
+        };
 
-        // Copy-to-clipboard for VRCDN (keeps your original behavior)
-        const vrStreamLink = document.getElementById('vr-stream-link');
-        if (vrStreamLink) {
-            vrStreamLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                const originalText = this.getAttribute('data-original-text');
-                const spanElement = this.querySelector('span');
-                navigator.clipboard.writeText(this.href).then(() => {
-                    spanElement.textContent = 'Copied!';
-                    setTimeout(() => spanElement.textContent = originalText, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy: ', err);
-                    spanElement.textContent = 'Failed to copy';
-                });
-            });
-        }
+        const startAmb = async()=>{ if(ref.ambOn) return; const c=await resume(); if(!c) return;
+            const o1=osc('sine',56), o2=osc('sine',124), lfo=osc('sine',5);
+            const lfoGain=c.createGain(); lfoGain.gain.value=3; lfo.connect(lfoGain); lfoGain.connect(o2.frequency);
+            const n=noise(2); n.loop=true; const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=180; lp.Q.value=0.4;
+            const rumbleGain=c.createGain(); rumbleGain.gain.value=0.12;
+            const g1=env(o1,0.1,1.2,0.28, ref.amb), g2=env(o2,0.1,1.2,0.2, ref.amb);
+            n.connect(lp).connect(rumbleGain).connect(ref.amb);
+            o1.start(); o2.start(); lfo.start(); n.start();
+            amb = { o1,o2,lfo,n,g1,g2 }; ref.ambOn=true; updateAmbPressed(true);
+            scheduleChirp();
+        };
 
-        // Secret link handler (unchanged, with your fun facts)
-        const secretLink = document.getElementById('secret-link');
-        let clickCount = 0;
-        secretLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            clickCount++;
-            if (clickCount === 3) {
-                const audio = new Audio('https://files.catbox.moe/9m1p9p.mp3');
-                audio.play();
-                document.body.style.animation = 'glitch 0.3s linear infinite';
-                setTimeout(() => document.body.style.animation = '', 1000);
-            }
-            if (clickCount === 5) {
-                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
-                clickCount = 0;
-            } else {
-                showRandomFact();
-            }
+        const stopAmb = ()=>{ if(!ref.ambOn||!amb) return;
+            if (chirpTimer){ clearTimeout(chirpTimer); chirpTimer=null; }
+            const end=now()+0.5; amb.g1.gain.cancelScheduledValues(now()); amb.g2.gain.cancelScheduledValues(now());
+            amb.g1.gain.exponentialRampToValueAtTime(0.0001, end); amb.g2.gain.exponentialRampToValueAtTime(0.0001, end);
+            setTimeout(()=>{ try{ amb.o1.stop(); amb.o2.stop(); amb.lfo.stop(); amb.n.stop(); }catch{} amb=null; ref.ambOn=false; updateAmbPressed(false); }, 520);
+        };
+
+        // Pause chirps when tab hidden
+        document.addEventListener('visibilitychange', ()=>{
+            if (document.hidden && chirpTimer){ clearTimeout(chirpTimer); chirpTimer=null; }
+            else if (!document.hidden && ref.ambOn && !chirpTimer){ scheduleChirp(); }
         });
 
-        function showRandomFact() {
-            const facts = [
-                "Did you know? Bananas are berries, but strawberries aren't!",
-                "Fun fact: The shortest war in history lasted 38 minutes.",
-                "Weird science: If you yell for 8 years, 7 months and 6 days, you'll produce enough sound energy to heat one cup of coffee.",
-                "Hidden Reality fact: Our community was initially known as the 'Digital Rabbithole' before evolving into the thriving hub it is today!",
-                "AliceD trivia: Did you know AliceD is not just a DJ, but also a skilled VR world creator?",
-                "AliceD fun fact: AliceD's signature look includes a cap adorned with numerous buttons - each telling a story!",
-                "AliceD's style: AliceD is known for her unique fashion sense, often sporting dark tech-style clothes that scream 'DJ' from a mile away!",
-                "Hidden Reality culture: Our community is built on creativity, inclusivity, and mutual respect - a digital home for all!",
-                "AliceD fun fact: AliceD's DJ equipment once gained sentience and tried to take over the rave. We don't talk about that night.",
-                "AliceD's adventure: AliceD once got lost in her own VR world for 3 days. She claims it was 'for research'.",
-                "Hidden Reality legend: There's a rumor of a secret room in one of our worlds that only opens on a leap year. Nobody's found it... yet."
-            ];
-            alert(facts[Math.floor(Math.random() * facts.length)]);
+        return { play:(t='ping')=>({ping,gliss,ack,neg}[t]||ping)(), setMuted:(m)=>{ ref.muted=m; },
+            startAmb, stopAmb, get ambOn(){return ref.ambOn;}, resume };
+    })();
+
+    /* Centralized ambience setter — keeps button + engine in sync */
+    function setAmb(on){
+        const ambBtn = byId('ambToggle');
+        if (on && !AudioFX.ambOn) AudioFX.startAmb();
+        if (!on && AudioFX.ambOn) AudioFX.stopAmb();
+        ambBtn.setAttribute('aria-pressed', String(!!on));
+    }
+    function updateAmbPressed(state){ byId('ambToggle').setAttribute('aria-pressed', String(!!state)); }
+
+    /* ====== Gesture-gated boot (fix autoplay) ====== */
+    (function gestureBoot(){
+        const intro = document.getElementById('intro');
+        let armed = true;
+
+        function dismiss() {
+            if (!intro) return;
+            intro.style.transition = 'opacity .5s ease';
+            intro.style.opacity = '0';
+            setTimeout(() => intro.remove(), 520);
         }
-    });
+
+        async function onGesture() {
+            if (!armed) return;
+            armed = false;
+
+            await AudioFX.resume?.();
+
+            if (AUTO_AMBIENCE) setAmb(true);
+
+            AudioFX.play('ack');
+            dismiss();
+
+            removeEventListener('pointerdown', onGesture);
+            removeEventListener('touchstart', onGesture);
+            removeEventListener('keydown', onGesture);
+        }
+
+        addEventListener('pointerdown', onGesture, { passive: true });
+        addEventListener('touchstart', onGesture, { passive: true });
+        addEventListener('keydown', onGesture);
+    })();
+
+    /* SFX & Ambience buttons */
+    (function soundButtons(){
+        const sfxBtn=byId('soundToggle'); const ambBtn=byId('ambToggle'); let muted=false;
+        const draw=()=>{ sfxBtn.textContent = muted? '🔇':'🔊'; updateAmbPressed(AudioFX.ambOn); };
+        sfxBtn.addEventListener('click', async ()=>{
+            await AudioFX.resume(); muted=!muted; AudioFX.setMuted(muted); AudioFX.play('ack'); draw();
+        });
+        ambBtn.addEventListener('click', async ()=>{
+            await AudioFX.resume(); setAmb(!AudioFX.ambOn); AudioFX.play('ack'); draw();
+        });
+        draw();
+    })();
+
+    /* Keyboard enter activates focused link */
+    addEventListener('keydown', (e)=>{ if(e.key==='Enter' && document.activeElement?.classList.contains('link')) document.activeElement.click(); });
 </script>
 </body>
 </html>

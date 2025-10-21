@@ -46,7 +46,7 @@
         }
         .theme-soft{ --c-cyan-rgb: 128,255,215; --c-mag-rgb: 255,121,255; }
 
-        *{ box-sizing: border-box; }
+        *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html,body{ height:100%; }
         body{
             margin:0;
@@ -56,6 +56,7 @@
             display:grid; place-items:center;
             overflow-x:hidden;
             text-shadow:0 0 6px rgba(var(--c-cyan-rgb), .5);
+            -webkit-touch-callout: none;
         }
 
         /* Background stack */
@@ -124,7 +125,6 @@
             padding:14px 16px; border-radius:12px;
             box-shadow:0 0 10px rgba(var(--c-mag-rgb), .2);
             transition: transform .15s ease, box-shadow .2s ease, background .15s ease;
-            -webkit-tap-highlight-color: transparent;
         }
         .link:hover{ transform: translateY(-1px) scale(1.02); box-shadow:0 0 22px rgba(var(--c-mag-rgb), .4); background: rgba(var(--c-mag-rgb), .26); }
         .link:active{ transform: translateY(1px) scale(.98); }
@@ -163,13 +163,23 @@
 
         /* Intro overlay */
         #intro{ position:fixed; inset:0; display:grid; place-items:center; background:#000; z-index:10; }
-        #intro .inner{ text-align:center; color: rgb(var(--c-cyan-rgb)); }
-        #intro .mark{ width:min(240px,70vw); aspect-ratio: 4 / 3; margin:0 auto 10px;
+        #intro .inner{ text-align:center; color: rgb(var(--c-cyan-rgb)); padding: 0 16px; max-width: 520px; }
+        #intro .mark{ width:min(240px,70vw); aspect-ratio: 4 / 3; margin:0 auto 14px;
             background:center/contain no-repeat url('linktree/logo.webp');
             filter: drop-shadow(0 0 20px rgba(var(--c-cyan-rgb), .8));
             animation:intro-pop .6s cubic-bezier(.2,.8,.2,1) both; }
-        #intro p{ opacity:.85; margin:0; animation:fade-in .9s .2s both; }
-        #intro .tap{ margin-top:8px; font-size:.9rem; opacity:.7; }
+        #intro p.lead{ opacity:.85; margin:0 0 18px 0; animation:fade-in .9s .2s both; }
+        #startBtn{
+            appearance: none; border:1px solid rgba(var(--c-cyan-rgb), .45);
+            background: rgba(10,10,15,.7); color: rgb(var(--c-cyan-rgb));
+            padding: 14px 22px; border-radius: 999px; font: 16px 'Share Tech Mono', monospace;
+            box-shadow: 0 0 14px rgba(var(--c-cyan-rgb), .25) inset, 0 0 22px rgba(0,100,255,.20);
+            touch-action: manipulation; cursor: pointer; width: min(360px, 78vw);
+            transition: transform .12s ease, box-shadow .2s ease, background .15s ease;
+        }
+        #startBtn:hover{ box-shadow: 0 0 16px rgba(var(--c-cyan-rgb), .3) inset, 0 0 28px rgba(0,100,255,.3); background: rgba(10,10,15,.76); }
+        #startBtn:active{ transform: translateY(1px) scale(.99); }
+        #intro .tap{ margin-top: 16px; font-size:.9rem; opacity:.7; }
         @keyframes intro-pop{ 0%{ transform:scale(.8); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
         @keyframes fade-in{ from{ opacity:0 } to{ opacity:1 } }
 
@@ -201,8 +211,9 @@
 <div id="intro">
     <div class="inner">
         <div class="mark" aria-hidden="true"></div>
-        <p>Booting Hidden Reality Node…</p>
-        <p class="tap">Tap or press any key to start</p>
+        <p class="lead">Booting Hidden Reality Node…</p>
+        <button id="startBtn" type="button" onclick="userStart()">⟶ Enter</button>
+        <p class="tap">If sound is blocked, tap 🌌 after entering.</p>
     </div>
 </div>
 
@@ -282,7 +293,7 @@
     const $ = sel => document.querySelector(sel);
     const byId = id => document.getElementById(id);
     const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const AUTO_AMBIENCE = true; // ambience starts after first gesture (intro)
+    const AUTO_AMBIENCE = true; // ambience starts after pressing Enter
 
     /* Theme toggle */
     (function theme(){
@@ -493,7 +504,7 @@
         });
 
         return { play:(t='ping')=>({ping,gliss,ack,neg}[t]||ping)(), setMuted:(m)=>{ ref.muted=m; },
-            startAmb, stopAmb, get ambOn(){return ref.ambOn;}, resume };
+            startAmb, stopAmb, get ambOn(){return ref.ambOn;}, resume, ensure };
     })();
 
     /* Centralized ambience setter — keeps button + engine in sync */
@@ -505,37 +516,44 @@
     }
     function updateAmbPressed(state){ byId('ambToggle').setAttribute('aria-pressed', String(!!state)); }
 
-    /* ====== Gesture-gated boot (fix autoplay) ====== */
-    (function gestureBoot(){
-        const intro = document.getElementById('intro');
-        let armed = true;
+    /* ====== HARDENED gesture boot for touch (iOS/Android) ====== */
+    let _booted = false;
+    async function userStart(){
+        if (_booted) return;
+        _booted = true;
 
-        function dismiss() {
-            if (!intro) return;
-            intro.style.transition = 'opacity .5s ease';
-            intro.style.opacity = '0';
-            setTimeout(() => intro.remove(), 520);
+        // Ensure context exists, then unlock with a 20ms near-silent osc inside this handler
+        const ctx = await AudioFX.resume()?.then(()=>AudioFX.ensure()) || AudioFX.ensure();
+        try{
+            if (ctx && ctx.state === 'suspended') await ctx.resume();
+            if (ctx){
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                g.gain.value = 0.00001; // essentially silent
+                o.connect(g).connect(ctx.destination);
+                o.start();
+                o.stop(ctx.currentTime + 0.02);
+            }
+        }catch(e){ /* ignore */ }
+
+        if (AUTO_AMBIENCE) setAmb(true);
+        AudioFX.play('ack');
+
+        const intro = byId('intro');
+        if (intro){
+            intro.style.transition='opacity .5s ease';
+            intro.style.opacity='0';
+            setTimeout(()=> intro.remove(), 520);
         }
+    }
 
-        async function onGesture() {
-            if (!armed) return;
-            armed = false;
-
-            await AudioFX.resume?.();
-
-            if (AUTO_AMBIENCE) setAmb(true);
-
-            AudioFX.play('ack');
-            dismiss();
-
-            removeEventListener('pointerdown', onGesture);
-            removeEventListener('touchstart', onGesture);
-            removeEventListener('keydown', onGesture);
+    // Also bind programmatically in case inline handler is stripped by CSP
+    (function bindStart(){
+        const el = byId('startBtn');
+        if (el){
+            el.addEventListener('click', userStart, {passive:true});
+            el.addEventListener('touchend', userStart, {passive:true});
         }
-
-        addEventListener('pointerdown', onGesture, { passive: true });
-        addEventListener('touchstart', onGesture, { passive: true });
-        addEventListener('keydown', onGesture);
     })();
 
     /* SFX & Ambience buttons */
@@ -551,7 +569,7 @@
         draw();
     })();
 
-    /* Keyboard enter activates focused link */
+    /* Keyboard enter activates focused link (desktop) */
     addEventListener('keydown', (e)=>{ if(e.key==='Enter' && document.activeElement?.classList.contains('link')) document.activeElement.click(); });
 </script>
 </body>

@@ -4,573 +4,531 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>4liceD — Links</title>
-
-    <!-- Favicon -->
     <link rel="icon" href="linktree/favicon.png" type="image/png" />
 
-    <!-- OpenGraph & Twitter -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://4liced.github.io/" />
     <meta property="og:title" content="4liceD's Links" />
-    <meta property="og:description" content="Connect with 4liceD across various platforms" />
+    <meta property="og:description" content="Neurofunk Enjoyer & VR Creator" />
     <meta property="og:image" content="https://4liced.github.io/linktree/embed.png" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://4liced.github.io/" />
-    <meta property="twitter:title" content="4liceD's Links" />
-    <meta property="twitter:description" content="Connect with 4liceD across various platforms" />
-    <meta property="twitter:image" content="https://4liced.github.io/linktree/embed.png" />
-
-    <!-- Theme color gets updated at runtime -->
     <meta name="theme-color" content="#00ffff" id="theme-color-meta" />
 
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
-
-    <!-- Preload -->
-    <link rel="preload" as="image" href="background/1.webp" />
-    <link rel="preload" as="image" href="background/2.webp" />
-    <link rel="preload" as="image" href="linktree/logo.webp" />
-    <link rel="preload" as="image" href="linktree/4LICED_White.webp" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <style>
         :root{
-            --c-cyan-rgb: 0,255,255;
-            --c-mag-rgb: 230,0,255;
-            --c-fg: rgb(var(--c-cyan-rgb));
-            --c-bg: #000;
-            --radius: 14px;
-            --panel: rgba(10,10,15,.5);
-            --neon-shadow: 0 0 0 1px rgba(var(--c-cyan-rgb), .35),
-            0 0 30px rgba(0,100,255,.18),
-            inset 0 0 20px rgba(0,50,100,.35);
+            --c-cyan: 0, 255, 255;
+            --c-mag: 230, 0, 255;
+            --c-fg: rgb(var(--c-cyan));
+            --radius: 16px;
+            --panel: rgba(5, 8, 12, 0.75);
+            --neon-glow: 0 0 20px rgba(var(--c-cyan), 0.25), inset 0 0 30px rgba(var(--c-cyan), 0.05);
         }
-        .theme-soft{ --c-cyan-rgb: 128,255,215; --c-mag-rgb: 255,121,255; }
 
         *{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html,body{ height:100%; }
+        html,body{ height:100%; margin:0; }
+
         body{
-            margin:0;
             font-family:'Share Tech Mono', monospace;
             color:var(--c-fg);
-            background: var(--c-bg) center/cover fixed;
+            background: #000;
             display:grid; place-items:center;
             overflow-x:hidden;
-            text-shadow:0 0 6px rgba(var(--c-cyan-rgb), .5);
-            -webkit-touch-callout: none;
+            text-shadow: 0 0 4px rgba(var(--c-cyan), 0.5);
         }
 
-        /* Background stack */
+        /* --- FX Layers --- */
         .bg-stack{ position:fixed; inset:0; z-index:-1; }
-        .bg-slide{ position:absolute; inset:0; background-size:cover; background-position:center;
-            filter:saturate(1.05) contrast(1.05); transition:opacity .9s ease-in-out; }
+        .bg-slide{
+            position:absolute; inset:0; background-size:cover; background-position:center;
+            transition:opacity 1s ease;
+            filter: brightness(0.9) contrast(1.1) blur(1px);
+            transform: scale(1.05);
+        }
         .bg-slide.top{ opacity:1; } .bg-slide.bottom{ opacity:0; }
-        canvas#fx{ position:absolute; inset:0; }
+        canvas#fx{ position:absolute; inset:0; opacity: 0.5; mix-blend-mode: screen; }
 
-        /* Scanlines overlay */
+        /* Scanlines */
         body::after{
             content:""; position:fixed; inset:0; pointer-events:none; z-index:2;
-            background:repeating-linear-gradient(0deg,
-            rgba(var(--c-cyan-rgb), .18),
-            rgba(var(--c-cyan-rgb), .18) 2px,
-            transparent 2px, transparent 4px);
-            mix-blend-mode:screen;
-            animation:scanline-drift 8s linear infinite, scanline-pulse 3s ease-in-out infinite alternate;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 3px, 3px 100%;
+            mix-blend-mode: overlay;
         }
-        @keyframes scanline-drift{0%{transform:translateY(0)}100%{transform:translateY(-4px)}}
-        @keyframes scanline-pulse{0%{opacity:.85}50%{opacity:1}100%{opacity:.85}}
 
-        /* Panel */
+        /* --- Custom Scrollbar --- */
+        * { scrollbar-width: thin; scrollbar-color: rgba(0, 255, 255, 0.3) rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); margin: 10px 0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 255, 255, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 255, 0.6); }
+
+        /* --- Main Container --- */
         .container{
-            width:min(680px,92vw);
-            max-height:90vh; overflow:auto;
-            background:var(--panel);
-            backdrop-filter: blur(10px) contrast(1.1) brightness(.9);
-            -webkit-backdrop-filter: blur(10px) contrast(1.1) brightness(.9);
-            border-radius:var(--radius);
-            padding:26px 22px 18px;
-            box-shadow:var(--neon-shadow);
-            position:relative;
-            transform-style:preserve-3d;
-            will-change:transform;
+            width: min(600px, 92vw);
+            max-height: 90vh;
+            overflow-y: auto; overflow-x: hidden;
+            background: var(--panel);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            padding: 35px 24px;
+            border: 1px solid rgba(var(--c-cyan), 0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), var(--neon-glow);
+            display: flex; flex-direction: column; align-items: center;
+            opacity: 0; transform: scale(0.95);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .container::before{
-            content:""; position:absolute; inset:0; border-radius:var(--radius); pointer-events:none;
-            background:
-                    radial-gradient(120% 80% at 50% 0%, rgba(var(--c-cyan-rgb), .12), transparent),
-                    repeating-linear-gradient(0deg, rgba(var(--c-cyan-rgb), .16), rgba(var(--c-cyan-rgb), .16) 2px, transparent 2px, transparent 4px);
-            mix-blend-mode:overlay;
+        .container.active { opacity: 1; transform: scale(1); }
+
+        /* --- Logo Area --- */
+        .logo {
+            width: 160px; height: 140px; margin: 0 auto 5px;
+            background: center/contain no-repeat url('linktree/logo.webp');
+            filter: drop-shadow(0 0 15px rgba(var(--c-cyan), 0.7));
+            transition: transform 0.3s ease;
+            /* CRITICAL FIX: Stops logo from collapsing on mobile */
+            flex-shrink: 0;
+        }
+        .logo:hover { transform: scale(1.05); }
+
+        .logo2 {
+            width: 180px; height: 40px; margin: 0 auto 20px;
+            background: center/contain no-repeat url('linktree/4LICED_White.webp');
+            filter: drop-shadow(0 0 8px rgba(var(--c-cyan), 0.5));
+            /* CRITICAL FIX: Stops text logo from collapsing on mobile */
+            flex-shrink: 0;
         }
 
-        /* Branding */
-        .logo{ width:200px; height:180px; margin:2px auto 4px;
-            background:center/contain no-repeat url('linktree/logo.webp');
-            filter: drop-shadow(0 0 10px rgba(var(--c-cyan-rgb), .8)); }
-        .logo2{ width:220px; height:50px; margin:0 auto 12px;
-            background:center/contain no-repeat url('linktree/4LICED_White.webp');
-            filter: drop-shadow(0 0 6px rgba(var(--c-cyan-rgb), .7)); }
-
-        /* Stacked greeting + descriptor */
-        .row{ display:flex; flex-direction:column; align-items:center; gap:6px; margin:10px 0 18px; }
-        #description{ opacity:.95; font-size:1.05rem; min-height:1.2em; transition:opacity .45s ease; }
-        .chip{ border:1px solid rgba(var(--c-cyan-rgb), .35); padding:4px 10px; border-radius:999px;
-            box-shadow:0 0 12px rgba(var(--c-cyan-rgb), .18) inset; font-size:.9rem; opacity:.85; }
-
-        /* Links */
-        .links{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px; }
-        @media (max-width: 620px){ .links{ grid-template-columns:1fr; } }
-        .link{
-            display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff;
-            background: rgba(var(--c-mag-rgb), .16);
-            border:1px solid rgba(var(--c-mag-rgb), .4);
-            padding:14px 16px; border-radius:12px;
-            box-shadow:0 0 10px rgba(var(--c-mag-rgb), .2);
-            transition: transform .15s ease, box-shadow .2s ease, background .15s ease;
+        /* The Typing Text */
+        #description {
+            min-height: 1.5em; font-size: 1.1rem; opacity: 0.9;
+            margin-bottom: 10px; letter-spacing: 1px;
+            color: #fff; text-shadow: 0 0 8px rgba(var(--c-cyan), 0.8);
+            flex-shrink: 0;
         }
-        .link:hover{ transform: translateY(-1px) scale(1.02); box-shadow:0 0 22px rgba(var(--c-mag-rgb), .4); background: rgba(var(--c-mag-rgb), .26); }
-        .link:active{ transform: translateY(1px) scale(.98); }
-        .link:focus-visible{ outline:3px solid rgba(var(--c-cyan-rgb), .7); outline-offset:2px; }
-        .link>img{ width:22px; height:22px; opacity:.95; flex:0 0 auto; }
-        .link>span{ flex:1; letter-spacing:.2px; }
-        .link:hover span{ position:relative; animation: glitch-text .35s steps(2,end) infinite; text-shadow:2px 0 red, -2px 0 blue; }
-        @keyframes glitch-text{0%{text-shadow:2px 0 red, -2px 0 blue}50%{text-shadow:-2px 0 red, 2px 0 blue}100%{text-shadow:2px 0 red, -2px 0 blue}}
 
-        /* CTA */
-        .hidden-reality-link{
-            grid-column:1/-1; display:flex; align-items:center; gap:12px;
-            padding:16px 18px; border-radius:12px; color:#fff; text-decoration:none;
-            background: rgba(var(--c-cyan-rgb), .18); border:1px solid rgba(var(--c-cyan-rgb), .35);
-            box-shadow:0 0 14px rgba(var(--c-cyan-rgb), .18);
-            transition: transform .15s ease, box-shadow .2s ease; font-weight:600;
+        /* --- Links Grid --- */
+        .links-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;
+            margin-top: 10px;
         }
-        .hidden-reality-link:hover{ transform: translateY(-1px) scale(1.02); box-shadow:0 0 22px rgba(var(--c-cyan-rgb), .4); }
-        .hidden-reality-link img{ width:22px; height:22px; }
+        @media (max-width: 550px){ .links-grid{ grid-template-columns: 1fr; } }
 
-        /* Footer */
-        .footer{ position:fixed; inset:auto 0 0 0; padding:6px 10px; text-align:center;
-            background:rgba(10,10,15,.86);
-            backdrop-filter: blur(8px) contrast(1.1) brightness(.9);
-            -webkit-backdrop-filter: blur(8px) contrast(1.1) brightness(.9);
-            box-shadow:var(--neon-shadow); z-index:3; }
-
-        /* Toolbar (icons only) */
-        .toolbar{ position:fixed; top:12px; right:12px; display:flex; gap:8px; z-index:4; }
-        .btn{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px;
-            border:1px solid rgba(var(--c-cyan-rgb), .35); background:rgba(10,10,15,.6);
-            color: rgb(var(--c-cyan-rgb)); border-radius:999px; text-decoration:none;
-            box-shadow:0 0 10px rgba(var(--c-cyan-rgb), .18) inset; cursor:pointer; user-select:none;
-            font-size:18px; line-height:1; }
-        .btn[aria-pressed="true"]{ box-shadow:0 0 0 2px rgba(var(--c-cyan-rgb), .55), 0 0 14px rgba(var(--c-cyan-rgb), .35) inset; }
-
-        /* Intro overlay */
-        #intro{ position:fixed; inset:0; display:grid; place-items:center; background:#000; z-index:10; }
-        #intro .inner{ text-align:center; color: rgb(var(--c-cyan-rgb)); padding: 0 16px; max-width: 520px; }
-        #intro .mark{ width:min(240px,70vw); aspect-ratio: 4 / 3; margin:0 auto 14px;
-            background:center/contain no-repeat url('linktree/logo.webp');
-            filter: drop-shadow(0 0 20px rgba(var(--c-cyan-rgb), .8));
-            animation:intro-pop .6s cubic-bezier(.2,.8,.2,1) both; }
-        #intro p.lead{ opacity:.85; margin:0 0 18px 0; animation:fade-in .9s .2s both; }
-        #startBtn{
-            appearance: none; border:1px solid rgba(var(--c-cyan-rgb), .45);
-            background: rgba(10,10,15,.7); color: rgb(var(--c-cyan-rgb));
-            padding: 14px 22px; border-radius: 999px; font: 16px 'Share Tech Mono', monospace;
-            box-shadow: 0 0 14px rgba(var(--c-cyan-rgb), .25) inset, 0 0 22px rgba(0,100,255,.20);
-            touch-action: manipulation; cursor: pointer; width: min(360px, 78vw);
-            transition: transform .12s ease, box-shadow .2s ease, background .15s ease;
+        .link {
+            position: relative; display: flex; align-items: center; gap: 14px;
+            padding: 16px 20px; text-decoration: none; color: #fff;
+            background: rgba(var(--c-mag), 0.08);
+            border: 1px solid rgba(var(--c-mag), 0.3);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            overflow: hidden; opacity: 0; transform: translateY(20px);
+            /* Ensure links don't get crushed either */
+            flex-shrink: 0;
         }
-        #startBtn:hover{ box-shadow: 0 0 16px rgba(var(--c-cyan-rgb), .3) inset, 0 0 28px rgba(0,100,255,.3); background: rgba(10,10,15,.76); }
-        #startBtn:active{ transform: translateY(1px) scale(.99); }
-        #intro .tap{ margin-top: 16px; font-size:.9rem; opacity:.7; }
-        @keyframes intro-pop{ 0%{ transform:scale(.8); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
-        @keyframes fade-in{ from{ opacity:0 } to{ opacity:1 } }
-
-        @media (prefers-reduced-motion: reduce){
-            .bg-slide{ transition:none } body::after{ animation:none } .container{ transition:none }
+        /* Hover Sweep Effect */
+        .link::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: 0.5s;
         }
+        .link:hover::before { left: 100%; }
+        .link:hover {
+            background: rgba(var(--c-mag), 0.25); border-color: rgba(var(--c-mag), 0.8);
+            transform: translateY(-2px); box-shadow: 0 0 15px rgba(var(--c-mag), 0.4);
+        }
+        .link:active { transform: scale(0.98); }
+
+        .link i { font-size: 1.4rem; width: 24px; text-align: center; }
+        .link span { font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; }
+
+        /* Featured Link */
+        .feat-link {
+            grid-column: 1 / -1; background: rgba(var(--c-cyan), 0.12);
+            border-color: rgba(var(--c-cyan), 0.5); justify-content: center; margin-bottom: 8px;
+        }
+        .feat-link:hover {
+            background: rgba(var(--c-cyan), 0.25); border-color: rgba(var(--c-cyan), 1);
+            box-shadow: 0 0 25px rgba(var(--c-cyan), 0.4);
+        }
+
+        .link.fade-in { animation: slideIn 0.5s forwards ease-out; }
+        @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Toolbar --- */
+        .toolbar { position: fixed; top: 20px; right: 20px; display: flex; gap: 12px; z-index: 10; }
+        .tool-btn {
+            background: rgba(0,0,0,0.75); border: 1px solid rgba(var(--c-cyan), 0.4);
+            color: rgb(var(--c-cyan)); width: 44px; height: 44px; border-radius: 50%;
+            display: grid; place-items: center; font-size: 1.3rem; cursor: pointer;
+            transition: 0.2s; backdrop-filter: blur(4px);
+            box-shadow: 0 0 10px rgba(var(--c-cyan), 0.15);
+        }
+        .tool-btn:hover { background: rgba(var(--c-cyan), 0.2); box-shadow: 0 0 20px rgba(var(--c-cyan), 0.5); transform: scale(1.1); }
+        .tool-btn.active { color: #ff3333; border-color: #ff3333; box-shadow: 0 0 10px rgba(255, 51, 51, 0.3); }
+
+        .footer {
+            position: fixed; bottom: 15px; width: 100%; text-align: center;
+            font-size: 0.85rem; opacity: 0.6; pointer-events: none; z-index: 5;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+        .footer a { pointer-events: auto; color: inherit; text-decoration: none; border-bottom: 1px dotted rgba(var(--c-cyan),0.5); }
+
+        /* --- Intro Overlay --- */
+        #intro {
+            position: fixed; inset: 0; background: #000; z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease;
+        }
+        #startBtn {
+            background: transparent; color: rgb(var(--c-cyan));
+            border: 1px solid rgb(var(--c-cyan)); padding: 16px 45px;
+            font-family: inherit; font-size: 1.2rem; letter-spacing: 3px;
+            cursor: pointer; position: relative; overflow: hidden;
+            box-shadow: 0 0 15px rgba(var(--c-cyan), 0.3);
+            transition: 0.3s; margin-top: 30px; text-transform: uppercase;
+        }
+        #startBtn:hover { background: rgba(var(--c-cyan), 0.15); letter-spacing: 5px; box-shadow: 0 0 40px rgba(var(--c-cyan), 0.6); }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); } 20% { transform: skew(-4deg); }
+            40% { transform: skew(4deg); } 60% { transform: skew(-2deg); } 80% { transform: skew(2deg); } 100% { transform: skew(0deg); }
+        }
+        .glitch-active { animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; color: #ff0055 !important; border-color: #ff0055 !important; }
+
     </style>
 </head>
 <body>
-<!-- Background stack -->
-<div class="bg-stack" aria-hidden="true">
+
+<div class="bg-stack">
     <div class="bg-slide top" id="bgA" style="background-image:url('background/1.webp')"></div>
     <div class="bg-slide bottom" id="bgB" style="background-image:url('background/2.webp')"></div>
     <canvas id="fx"></canvas>
 </div>
 
-<!-- Toolbar -->
-<div class="toolbar" role="toolbar" aria-label="Utilities">
-    <button class="btn" id="themeToggle" title="Toggle theme" aria-pressed="false">⚡</button>
-    <button class="btn" id="soundToggle" title="SFX" aria-pressed="true">🔊</button>
-    <button class="btn" id="ambToggle" title="Ambience" aria-pressed="false">🌌</button>
-    <button class="btn" id="shareAll" title="Share">↗</button>
+<div class="toolbar">
+    <button class="tool-btn" id="soundToggle" title="Toggle Audio System"><i class="ri-volume-up-fill"></i></button>
+    <button class="tool-btn" id="shareAll" title="Share Uplink"><i class="ri-share-forward-fill"></i></button>
 </div>
 
-<!-- Footer -->
-<div class="footer">4liceD © 2025 — Contact: <a href="mailto:4liced@4liced.com" style="color:inherit">4liced@4liced.com</a></div>
-
-<!-- Intro overlay -->
 <div id="intro">
-    <div class="inner">
-        <div class="mark" aria-hidden="true"></div>
-        <p class="lead">Executing ./HiddenReality/4liceD.sh</p>
-        <button id="startBtn" type="button" onclick="userStart()">⟶ Enter</button>
-        <p class="tap">If sound is blocked, tap 🌌 after entering.</p>
-    </div>
+    <div style="width:120px; height:120px; background:center/contain no-repeat url('linktree/logo.webp'); margin-bottom:25px; filter:drop-shadow(0 0 30px cyan);"></div>
+    <div style="opacity:0.6; letter-spacing:2px; font-size:0.9rem;">SECURE CONNECTION ESTABLISHED</div>
+    <button id="startBtn" onclick="userStart()">Initialize</button>
 </div>
 
-<!-- Main -->
-<main class="container" id="panel" aria-live="polite">
-    <div class="logo" role="img" aria-label="4liceD logo"></div>
-    <div class="logo2" role="img" aria-label="4liceD wordmark"></div>
+<main class="container" id="panel">
 
-    <div class="row">
-        <span id="greeting" class="chip" aria-hidden="true"></span>
-        <p id="description">Neurofunk Enjoyer</p>
+    <div class="logo"></div>
+    <div class="logo2"></div>
+    <div id="description">System Online</div>
+
+    <div class="links-grid" id="linkContainer">
+        <a href="https://hidden-reality.github.io/" class="link feat-link" target="_blank">
+            <i class="ri-global-line"></i> <span>Founder of Hidden Reality</span>
+        </a>
+        <a href="https://vrc.group/4CD.4060" class="link" target="_blank">
+            <i class="ri-gamepad-line"></i> <span>VRChat Group</span>
+        </a>
+        <a href="https://x.com/4liceD_" class="link" target="_blank">
+            <i class="ri-twitter-x-line"></i> <span>Twitter / X</span>
+        </a>
+        <a href="https://bsky.app/profile/4liced.com" class="link" target="_blank">
+            <i class="ri-cloud-line"></i> <span>Bluesky</span>
+        </a>
+        <a rel="me" href="https://mastodon.hidden-reality.net/@4liceD" class="link" target="_blank">
+            <i class="ri-mastodon-line"></i> <span>Mastodon</span>
+        </a>
+        <a href="https://www.twitch.tv/4licedj" class="link" target="_blank">
+            <i class="ri-twitch-line"></i> <span>Twitch</span>
+        </a>
+        <a href="https://www.mixcloud.com/4liceD/" class="link" target="_blank">
+            <i class="ri-music-2-line"></i> <span>Mixcloud</span>
+        </a>
+        <a href="https://www.instagram.com/4liced/" class="link" target="_blank">
+            <i class="ri-instagram-line"></i> <span>Instagram</span>
+        </a>
+        <a href="https://www.youtube.com/@4liced_" class="link" target="_blank">
+            <i class="ri-youtube-line"></i> <span>YouTube</span>
+        </a>
+        <a href="https://www.tiktok.com/@4liced" class="link" target="_blank">
+            <i class="ri-tiktok-line"></i> <span>TikTok</span>
+        </a>
+        <a href="https://aliced.artstation.com" class="link" target="_blank">
+            <i class="ri-artboard-line"></i> <span>ArtStation</span>
+        </a>
+        <a href="https://aliced.booth.pm" class="link" target="_blank">
+            <i class="ri-shopping-bag-3-line"></i> <span>Booth</span>
+        </a>
+        <a href="rtspt://stream.vrcdn.live/live/4liced" class="link" id="vr-stream-link">
+            <i class="ri-broadcast-line"></i> <span>VRCDN Stream</span>
+        </a>
+        <a href="https://discord.gg/7peUVemWgS" class="link" target="_blank">
+            <i class="ri-discord-line"></i> <span>Discord</span>
+        </a>
+        <a href="#" id="secret-link" class="link" style="border-color: rgba(255,0,0,0.3)">
+            <i class="ri-eye-off-line"></i> <span>Classified</span>
+        </a>
     </div>
-
-    <a href="https://hidden-reality.github.io/" class="hidden-reality-link" target="_blank" rel="noopener" aria-label="Founder of Hidden Reality — open in new tab">
-        <img src="https://raw.githubusercontent.com/Hidden-Reality/Hidden-Reality.github.io/main/linktree/favicon.png" alt="Hidden Reality" />
-        <span>Founder of Hidden Reality</span>
-    </a>
-
-    <section class="links" id="links" aria-label="Main links">
-        <a href="https://vrc.group/4CD.4060" class="link" target="_blank" rel="noopener" data-title="VRChat Group">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=vrchat.com" alt="VRChat" />
-            <span>VRChat Group</span>
-        </a>
-        <a href="https://x.com/4liceD_" class="link" target="_blank" rel="noopener" data-title="X (Twitter)">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=x.com" alt="X" />
-            <span>X (Twitter)</span>
-        </a>
-        <a href="https://bsky.app/profile/4liced.com" class="link" target="_blank" rel="noopener" data-title="Bluesky">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=bsky.app" alt="Bluesky" />
-            <span>Bluesky</span>
-        </a>
-        <a rel="me" href="https://mastodon.hidden-reality.net/@4liceD" class="link" target="_blank" rel="noopener" data-title="Mastodon">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=mastodon.gamedev.place" alt="Mastodon" />
-            <span>Mastodon</span>
-        </a>
-        <a href="https://www.twitch.tv/4licedj" class="link" target="_blank" rel="noopener" data-title="Twitch">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=twitch.tv" alt="Twitch" />
-            <span>Twitch</span>
-        </a>
-        <a href="https://www.mixcloud.com/4liceD/" class="link" target="_blank" rel="noopener" data-title="Mixcloud">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=mixcloud.com" alt="Mixcloud" />
-            <span>Mixcloud</span>
-        </a>
-        <a href="https://www.instagram.com/4liced/" class="link" target="_blank" rel="noopener" data-title="Instagram">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=instagram.com" alt="Instagram" />
-            <span>Instagram</span>
-        </a>
-        <a href="https://www.youtube.com/@4liced_" class="link" target="_blank" rel="noopener" data-title="YouTube">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=youtube.com" alt="YouTube" />
-            <span>YouTube</span>
-        </a>
-        <a href="https://www.tiktok.com/@4liced" class="link" target="_blank" rel="noopener" data-title="TikTok">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=tiktok.com" alt="TikTok" />
-            <span>TikTok</span>
-        </a>
-        <a href="https://aliced.artstation.com" class="link" target="_blank" rel="noopener" data-title="ArtStation">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=artstation.com" alt="ArtStation" />
-            <span>ArtStation</span>
-        </a>
-        <a href="https://aliced.booth.pm" class="link" target="_blank" rel="noopener" data-title="Booth">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=booth.pm" alt="Booth" />
-            <span>Booth</span>
-        </a>
-        <a href="rtspt://stream.vrcdn.live/live/4liced" class="link" id="vr-stream-link" data-original-text="VRCDN" data-title="VRCDN">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=vrcdn.live" alt="VRCDN" />
-            <span>VRCDN</span>
-        </a>
-        <a href="https://discord.gg/7peUVemWgS" class="link" target="_blank" rel="noopener" data-title="Support Discord">
-            <img src="https://www.google.com/s2/favicons?sz=64&domain=discord.com" alt="Discord" />
-            <span>Support Discord</span>
-        </a>
-        <a href="#" id="secret-link" class="link" data-title="Secret">Click for a surprise!</a>
-    </section>
 </main>
+
+<div class="footer">4liceD © 2026 - Contact: 4liced.4liced.com</div>
 
 <script>
     const $ = sel => document.querySelector(sel);
     const byId = id => document.getElementById(id);
-    const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const AUTO_AMBIENCE = true; // ambience starts after pressing Enter
 
-    /* Theme toggle */
-    (function theme(){
-        const toggle=byId('themeToggle'); const meta=$('#theme-color-meta');
-        function apply(){ meta.setAttribute('content',
-            getComputedStyle(document.documentElement).getPropertyValue('--c-fg').trim()||'rgb(0,255,255)'); }
-        toggle.addEventListener('click', ()=>{
-            document.documentElement.classList.toggle('theme-soft');
-            toggle.setAttribute('aria-pressed', String(toggle.getAttribute('aria-pressed')!=='true'));
-            apply(); AudioFX.play('ack'); navigator.vibrate?.(8);
-        });
-        apply();
-    })();
-
-    /* Background slideshow */
-    (function bg(){
-        const images=['background/1.webp','background/2.webp','background/3.webp','background/4.webp','background/5.webp','background/6.webp','background/7.webp','background/8.webp','background/9.webp','background/10.webp','background/11.webp','background/12.webp','background/13.webp','background/14.webp','background/15.webp'];
-        let i=0, topA=true; const A=byId('bgA'), B=byId('bgB');
-        function swap(){
-            const next=images[i=(i+1)%images.length]; const img=new Image();
-            img.onload=()=>{ const show=topA?B:A, hide=topA?A:B;
-                show.style.backgroundImage=`url('${next}')`;
-                show.classList.add('top'); show.classList.remove('bottom');
-                hide.classList.add('bottom'); hide.classList.remove('top');
-                topA=!topA; };
-            img.src=next;
-        }
-        swap(); const id=setInterval(swap, 5000); if(prefersReduced) clearInterval(id);
-        addEventListener('load', ()=> images.slice(2).forEach(src=>{ const im=new Image(); im.src=src; }));
-    })();
-
-    /* FX Canvas: neon grid */
-    ;(function fx(){
-        const c=byId('fx'), ctx=c.getContext('2d');
-        let w=c.width=innerWidth, h=c.height=innerHeight, pts=[];
-        function reset(){ w=c.width=innerWidth; h=c.height=innerHeight; pts=[];
-            const cols=Math.round(w/120), rows=Math.round(h/120);
-            for(let y=0;y<=rows;y++) for(let x=0;x<=cols;x++)
-                pts.push({x:(x/cols)*w,y:(y/rows)*h,z:Math.random()*6.28});
-        }
-        reset(); addEventListener('resize', reset,{passive:true});
-        let t=0,mx=0,my=0;
-        addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
-        addEventListener('deviceorientation',e=>{ if(e.gamma!=null){ mx=(e.gamma+45)/90*w; my=(e.beta+45)/90*h; }});
-        function loop(){
-            if(prefersReduced) return;
-            t+=.012; ctx.clearRect(0,0,w,h); ctx.globalCompositeOperation='lighter';
-            for(const p of pts){
-                const sway=Math.sin(t+p.z)*6;
-                const px=p.x+(mx-w/2)*.02+sway, py=p.y+(my-h/2)*.02+Math.cos(t+p.z)*6;
-                ctx.fillStyle='rgba(0,255,255,.12)'; ctx.beginPath(); ctx.arc(px,py,1.4,0,6.283); ctx.fill();
-            }
-            ctx.strokeStyle='rgba(230,0,255,.09)';
-            for(let i=0;i<pts.length;i+=2){
-                const a=pts[i], b=pts[i+1]; if(!b) break;
-                const ax=a.x+(mx-w/2)*.02+Math.sin(t+a.z)*6, ay=a.y+(my-h/2)*.02+Math.cos(t+a.z)*6;
-                const bx=b.x+(mx-w/2)*.02+Math.sin(t+b.z)*6, by=b.y+(my-h/2)*.02+Math.cos(t+b.z)*6;
-                ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
-            }
-            requestAnimationFrame(loop);
-        }
-        requestAnimationFrame(loop);
-    })();
-
-    /* Parallax tilt */
-    (function tilt(){
-        const el=byId('panel'); let rx=0,ry=0;
-        function onMove(x,y){
-            const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
-            ry=(x-cx)/r.width*6; rx=-(y-cy)/r.height*6;
-        }
-        addEventListener('pointermove',e=>onMove(e.clientX,e.clientY),{passive:true});
-        addEventListener('deviceorientation', e=>{ if(e.gamma!=null) onMove((e.gamma+45)/90*innerWidth,(e.beta+45)/90*innerHeight); });
-        function anim(){ el.style.transform=`rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`; requestAnimationFrame(anim); }
-        if(!prefersReduced) requestAnimationFrame(anim);
-    })();
-
-    /* Greeting + descriptors */
-    (function text(){
-        const desc=byId('description'); const chip=byId('greeting');
-        const list=['DJ extraordinaire','3D Artist','VR enthusiast',"Jump Up\'s Worst Nightmare",'German Engineering at its Finest','Professional Avatar Breaker','Stack of Shaders in a Trenchcoat','Certified VRChat Gremlin','Neurofunk Enjoyer'];
-        let i=0;
-        setInterval(()=>{ desc.style.opacity=0; setTimeout(()=>{ desc.textContent=list[i=(i+1)%list.length]; desc.style.opacity=1; },420); }, 2800);
-        const hr=new Date().getHours();
-        chip.textContent = hr<5?'Good night, runner': hr<12?'Good morning, runner': hr<18?'Good afternoon, runner':'Good evening, runner';
-    })();
-
-    /* Share / copy */
-    (function share(){
-        const btn=byId('shareAll');
-        btn.addEventListener('click', async()=>{
-            const data={title:"4liceD's Links", text:'Catch me here →', url:location.href};
-            if(navigator.share){ try{ await navigator.share(data); }catch(_){} }
-            else { await navigator.clipboard.writeText(data.url); toast('Link copied'); }
-            AudioFX.play('ack');
-        });
-        document.querySelectorAll('.link').forEach(a=>{
-            let t; const start=()=>{ t=setTimeout(async()=>{ await navigator.clipboard.writeText(a.href); toast('Copied '+(a.dataset.title||'link')); navigator.vibrate?.(12); AudioFX.play('gliss'); }, 420); };
-            const clear=()=>clearTimeout(t);
-            a.addEventListener('pointerdown', start); a.addEventListener('pointerup', clear); a.addEventListener('pointerleave', clear);
-            a.addEventListener('click', ()=> AudioFX.play('ping'));
-        });
-    })();
-
-    /* VRCDN click-to-copy */
-    (function vrcdn(){
-        const link=byId('vr-stream-link'); if(!link) return;
-        link.addEventListener('click', async(e)=>{
-            e.preventDefault(); const span=link.querySelector('span'); const original=span.textContent;
-            try{ await navigator.clipboard.writeText(link.href); span.textContent='Copied!'; navigator.vibrate?.(8); AudioFX.play('gliss'); }
-            catch{ span.textContent='Failed to copy'; }
-            setTimeout(()=> span.textContent=original, 1400);
-        });
-    })();
-
-    /* Secret / Konami */
-    (function secret(){
-        const el=byId('secret-link');
-        const facts=['Bananas are berries, strawberries are not.','Shortest war ever? 38 minutes.',"Yell for ~8 years to heat a coffee.","Hidden Reality used to be 'Digital Rabbithole'.","AliceD is a VR world creator too.","AliceD's cap is a lore archive.",'Her gear once tried to take over the rave.','Got lost in her own VR world for 3 days (research).','Rumor: a secret room opens only on leap years.'];
-        let clicks=0; function show(){ alert(facts[Math.floor(Math.random()*facts.length)]); }
-        el.addEventListener('click',(e)=>{
-            e.preventDefault(); clicks++;
-            if(clicks===3){ document.body.style.animation='glitch .3s linear infinite'; setTimeout(()=> document.body.style.animation='', 1000); AudioFX.play('neg'); }
-            if(clicks===5){ window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ','_blank'); clicks=0; } else { show(); }
-        });
-        const seq=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']; let buf=[];
-        addEventListener('keydown', (e)=>{
-            buf.push(e.key); buf = buf.slice(-10);
-            if(seq.every((k,i)=>buf[i]===k)){ document.documentElement.style.setProperty('--c-mag-rgb','255,42,209'); toast('Konami mode!'); AudioFX.play('ack'); }
-        });
-        const style=document.createElement('style');
-        style.textContent='@keyframes glitch{0%{filter:hue-rotate(0)}25%{filter:hue-rotate(40deg)}50%{filter:hue-rotate(-40deg)}75%{filter:hue-rotate(20deg)}100%{filter:hue-rotate(0)}}';
-        document.head.appendChild(style);
-    })();
-
-    /* Micro-glitches */
-    setInterval(()=>{ document.querySelectorAll('.link').forEach(l=>{ if(Math.random()>0.965){ const t=l.style.transform; l.style.transform='translateX(2px)'; setTimeout(()=> l.style.transform=t, 100); } }); }, 3000);
-
-    /* Toasts */
-    (function toastInit(){
-        const host=document.createElement('div'); host.style.position='fixed'; host.style.top='10px'; host.style.left='50%'; host.style.transform='translateX(-50%)'; host.style.zIndex='9999'; document.body.appendChild(host);
-        window.toast=(msg)=>{ const n=document.createElement('div'); n.textContent=msg; n.style.margin='6px 0'; n.style.padding='8px 12px'; n.style.borderRadius='999px'; n.style.border='1px solid rgba(var(--c-cyan-rgb), .4)'; n.style.background='rgba(10,10,15,.8)'; n.style.color='rgb(var(--c-cyan-rgb))'; n.style.boxShadow='0 0 12px rgba(var(--c-cyan-rgb), .18) inset'; n.style.font='14px Share Tech Mono, monospace'; n.style.opacity='0'; n.style.transition='opacity .2s ease, transform .2s ease'; host.appendChild(n);
-            requestAnimationFrame(()=>{ n.style.opacity='1'; n.style.transform='translateY(0)'; });
-            setTimeout(()=>{ n.style.opacity='0'; n.style.transform='translateY(-6px)'; setTimeout(()=> host.removeChild(n), 200); }, 1600);
-        }
-    })();
-
-    /* ====== Audio: soft LCARS SFX + ambience with random console clicks ====== */
+    /* --- AUDIO ENGINE: Chill & Immersive Edition --- */
     const AudioFX = (()=> {
-        const ref = { ctx:null, master:null, sfx:null, amb:null, muted:false, ambOn:false };
-        const ensure = ()=>{ if(ref.ctx) return ref.ctx;
+        const ref = { ctx:null, master:null, sfx:null, amb:null, muted:false, active:false };
+        let chirpTimer = null;
+        let ambNodes = null;
+
+        const ensure = ()=>{
+            if(ref.ctx) return ref.ctx;
             const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null;
-            const ctx=new AC(); const master=ctx.createGain(), sfx=ctx.createGain(), amb=ctx.createGain();
-            master.gain.value=0.9; sfx.gain.value=0.9; amb.gain.value=0.5;
-            sfx.connect(master); amb.connect(master); master.connect(ctx.destination);
+            const ctx=new AC();
+            const master=ctx.createGain(), sfx=ctx.createGain(), amb=ctx.createGain();
+
+            // Adjusted Volumes for Comfort
+            master.gain.value = 0.9;
+            sfx.gain.value = 0.8;
+            amb.gain.value = 0.5;
+
+            // Limiter 
+            const limiter = ctx.createDynamicsCompressor();
+            limiter.threshold.value = -6;
+            limiter.ratio.value = 12;
+            master.connect(limiter).connect(ctx.destination);
+            sfx.connect(master); amb.connect(master);
+
             Object.assign(ref,{ctx,master,sfx,amb}); return ctx;
         };
-        const resume = async()=>{ const c=ensure(); try{ if(c&&c.state==='suspended') await c.resume(); }catch(_){} return c; };
         const now = ()=> ensure()?.currentTime||0;
-        const bandpass=(f=1500,Q=10)=>{ const c=ensure(); const bi=c.createBiquadFilter(); bi.type='bandpass'; bi.frequency.value=f; bi.Q.value=Q; return bi; };
-        const env=(node,a=0.003,r=0.14,lvl=0.18,dest=ref.sfx)=>{ const c=ensure(); const g=c.createGain(); g.gain.setValueAtTime(0, now()); g.gain.linearRampToValueAtTime(ref.muted?0:lvl, now()+a); g.gain.exponentialRampToValueAtTime(0.0001, now()+a+r); node.connect(g).connect(dest); return g; };
-        const osc=(type='sine',f=1200)=>{ const c=ensure(); const o=c.createOscillator(); o.type=type; o.frequency.setValueAtTime(f, now()); return o; };
-        const noise=(seconds=1)=>{ const c=ensure(); const len=seconds*c.sampleRate; const buf=c.createBuffer(1,len,c.sampleRate); const d=buf.getChannelData(0); let last=0; for(let i=0;i<len;i++){ const w=Math.random()*2-1; last=(last+0.02*w)/(1+0.02); d[i]=last; } const n=c.createBufferSource(); n.buffer=buf; return n; };
 
-        function ping(){ const o=osc('sine',1500), bp=bandpass(1500,10); o.connect(bp); env(bp,0.002,0.12,0.14); o.start(); o.stop(now()+0.12); }
-        function gliss(){ const o=osc('sine',1100), bp=bandpass(1400,12); o.connect(bp); env(bp,0.002,0.16,0.16); o.frequency.exponentialRampToValueAtTime(1800, now()+0.14); o.start(); o.stop(now()+0.18); }
-        function ack(){ const c=ensure(); const start=now(); [1200,1600].forEach((f,i)=>{ const o=osc('sine',f), bp=bandpass(f,9); o.connect(bp); const g=c.createGain(); g.gain.setValueAtTime(0, start+i*0.06); g.gain.linearRampToValueAtTime(ref.muted?0:0.16, start+i*0.06+0.01); g.gain.exponentialRampToValueAtTime(0.0001, start+i*0.06+0.12); bp.connect(g).connect(ref.sfx); o.start(start+i*0.06); o.stop(start+i*0.2); }); }
-        function neg(){ const o=osc('sine',280), bp=bandpass(300,6); o.connect(bp); env(bp,0.004,0.22,0.12); o.frequency.linearRampToValueAtTime(180, now()+0.18); o.start(); o.stop(now()+0.24); }
+        // Helpers
+        const bandpass=(f,Q=5)=>{ const c=ensure(), b=c.createBiquadFilter(); b.type='bandpass'; b.frequency.value=f; b.Q.value=Q; return b; };
+        const env=(n,a,r,l,d=ref.sfx)=>{ const c=ensure(), g=c.createGain(); g.gain.setValueAtTime(0,now()); g.gain.linearRampToValueAtTime(ref.muted?0:l,now()+a); g.gain.exponentialRampToValueAtTime(0.0001,now()+a+r); n.connect(g).connect(d); return g; };
+        const osc=(t,f)=>{ const c=ensure(), o=c.createOscillator(); o.type=t; o.frequency.value=f; return o; };
+        const noise=(s=1)=>{ const c=ensure(), l=s*c.sampleRate, b=c.createBuffer(1,l,c.sampleRate), d=b.getChannelData(0); let last=0; for(let i=0;i<l;i++){ let w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last; } const n=c.createBufferSource(); n.buffer=b; return n; };
 
-        // Ambience nodes + random chirps
-        let amb = null;
-        let chirpTimer = null;
+        // 1. One-Shot Sounds
+        const play = (t) => {
+            if(ref.muted) return;
+            const c=ensure();
+            const panner = c.createStereoPanner();
+            panner.pan.value = (Math.random() * 2) - 1;
+            panner.connect(ref.sfx);
 
-        const scheduleChirp = ()=>{
-            if (!amb || !ref.ambOn) return;
-            const delay = 4000 + Math.random()*8000; // 4–12s
-            chirpTimer = setTimeout(()=>{
-                if (!document.hidden && !ref.muted && ref.ambOn) {
-                    (Math.random()<0.6 ? ping : gliss)();
+            const map = {
+                // Gentle Boot Sound (Sine Wave Chord)
+                'boot': ()=>{
+                    const start = now();
+                    [220, 440, 660].forEach((freq, i) => {
+                        const o = c.createOscillator();
+                        o.type = 'sine';
+                        o.frequency.value = freq;
+                        const g = c.createGain();
+                        g.gain.setValueAtTime(0, start);
+                        g.gain.linearRampToValueAtTime(0.15, start + 0.6);
+                        g.gain.linearRampToValueAtTime(0, start + 2.5);
+                        o.connect(g).connect(ref.sfx);
+                        o.start(); o.stop(start + 3);
+                    });
+                },
+                'ping': ()=>{ const o=osc('sine',1400),b=bandpass(1400); o.connect(b); env(b,0.01,0.15,0.15, panner); o.start(); o.stop(now()+0.2); },
+                'ack':  ()=>{ const start=now(); [1000,1500].forEach((f,i)=>{ const o=osc('square',f),b=bandpass(f,8); o.connect(b); env(b,0.01,0.08,0.1, ref.sfx); o.start(start+i*0.06); o.stop(start+i*0.2); }); },
+                'hover':()=>{ const o=osc('sawtooth',120),b=bandpass(200,2); o.connect(b); env(b,0.02,0.08,0.08, ref.sfx); o.start(); o.stop(now()+0.15); },
+                'data': ()=>{
+                    const start=now();
+                    for(let i=0;i<5;i++){
+                        const f=600+Math.random()*1200;
+                        const o=osc('sine',f); const g=env(o,0.005,0.04,0.08, panner);
+                        o.start(start+i*0.05); o.stop(start+i*0.05+0.06);
+                    }
+                },
+                'neg': ()=>{ const o=osc('sawtooth',150),b=bandpass(200,5); o.connect(b); env(b,0.05,0.3,0.2, ref.sfx); o.start(); o.stop(now()+0.4); }
+            };
+            (map[t]||map['ping'])();
+        };
+
+        // 2. Ambience: Server Room Hum
+        const startAmb = () => {
+            if(ref.muted || ambNodes) return;
+            const c=ensure();
+            const n=noise(4); n.loop=true;
+            const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=150;
+            const g=c.createGain(); g.gain.value=0.4;
+            n.connect(lp).connect(g).connect(ref.amb);
+            n.start();
+            ambNodes={n,g};
+        };
+        const stopAmb = () => { if(ambNodes){ try{ ambNodes.n.stop(); }catch(_){} ambNodes=null; } };
+
+        // 3. Random Spatial Chirps
+        const scheduleChirp = () => {
+            if(chirpTimer) clearTimeout(chirpTimer);
+            if(!ref.active || ref.muted) return;
+            const delay = 2000 + Math.random() * 5000;
+            chirpTimer = setTimeout(() => {
+                if(ref.active && !ref.muted && !document.hidden){
+                    const types = ['ping', 'data', 'data', 'ping', 'ping'];
+                    play(types[Math.floor(Math.random()*types.length)]);
                 }
                 scheduleChirp();
             }, delay);
         };
 
-        const startAmb = async()=>{ if(ref.ambOn) return; const c=await resume(); if(!c) return;
-            const o1=osc('sine',56), o2=osc('sine',124), lfo=osc('sine',5);
-            const lfoGain=c.createGain(); lfoGain.gain.value=3; lfo.connect(lfoGain); lfoGain.connect(o2.frequency);
-            const n=noise(2); n.loop=true; const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=180; lp.Q.value=0.4;
-            const rumbleGain=c.createGain(); rumbleGain.gain.value=0.12;
-            const g1=env(o1,0.1,1.2,0.28, ref.amb), g2=env(o2,0.1,1.2,0.2, ref.amb);
-            n.connect(lp).connect(rumbleGain).connect(ref.amb);
-            o1.start(); o2.start(); lfo.start(); n.start();
-            amb = { o1,o2,lfo,n,g1,g2 }; ref.ambOn=true; updateAmbPressed(true);
-            scheduleChirp();
+        const activate = () => { ref.active=true; startAmb(); scheduleChirp(); };
+        const setMuted = (m) => {
+            ref.muted=m;
+            if(m) { stopAmb(); if(chirpTimer) clearTimeout(chirpTimer); }
+            else { if(ref.active) { startAmb(); scheduleChirp(); } }
         };
 
-        const stopAmb = ()=>{ if(!ref.ambOn||!amb) return;
-            if (chirpTimer){ clearTimeout(chirpTimer); chirpTimer=null; }
-            const end=now()+0.5; amb.g1.gain.cancelScheduledValues(now()); amb.g2.gain.cancelScheduledValues(now());
-            amb.g1.gain.exponentialRampToValueAtTime(0.0001, end); amb.g2.gain.exponentialRampToValueAtTime(0.0001, end);
-            setTimeout(()=>{ try{ amb.o1.stop(); amb.o2.stop(); amb.lfo.stop(); amb.n.stop(); }catch{} amb=null; ref.ambOn=false; updateAmbPressed(false); }, 520);
-        };
-
-        // Pause chirps when tab hidden
-        document.addEventListener('visibilitychange', ()=>{
-            if (document.hidden && chirpTimer){ clearTimeout(chirpTimer); chirpTimer=null; }
-            else if (!document.hidden && ref.ambOn && !chirpTimer){ scheduleChirp(); }
-        });
-
-        return { play:(t='ping')=>({ping,gliss,ack,neg}[t]||ping)(), setMuted:(m)=>{ ref.muted=m; },
-            startAmb, stopAmb, get ambOn(){return ref.ambOn;}, resume, ensure };
+        return { ensure, play, activate, setMuted };
     })();
 
-    /* Centralized ambience setter — keeps button + engine in sync */
-    function setAmb(on){
-        const ambBtn = byId('ambToggle');
-        if (on && !AudioFX.ambOn) AudioFX.startAmb();
-        if (!on && AudioFX.ambOn) AudioFX.stopAmb();
-        ambBtn.setAttribute('aria-pressed', String(!!on));
-    }
-    function updateAmbPressed(state){ byId('ambToggle').setAttribute('aria-pressed', String(!!state)); }
-
-    /* ====== HARDENED gesture boot for touch (iOS/Android) ====== */
-    let _booted = false;
+    /* --- System Logic --- */
     async function userStart(){
-        if (_booted) return;
-        _booted = true;
-
-        // Ensure context exists, then unlock with a 20ms near-silent osc inside this handler
-        const ctx = await AudioFX.resume()?.then(()=>AudioFX.ensure()) || AudioFX.ensure();
-        try{
-            if (ctx && ctx.state === 'suspended') await ctx.resume();
-            if (ctx){
-                const o = ctx.createOscillator();
-                const g = ctx.createGain();
-                g.gain.value = 0.00001; // essentially silent
-                o.connect(g).connect(ctx.destination);
-                o.start();
-                o.stop(ctx.currentTime + 0.02);
-            }
-        }catch(e){ /* ignore */ }
-
-        if (AUTO_AMBIENCE) setAmb(true);
-        AudioFX.play('ack');
+        AudioFX.ensure()?.resume();
+        AudioFX.play('boot');
+        AudioFX.activate();
 
         const intro = byId('intro');
-        if (intro){
-            intro.style.transition='opacity .5s ease';
-            intro.style.opacity='0';
-            setTimeout(()=> intro.remove(), 520);
-        }
+        intro.style.opacity = '0';
+        setTimeout(()=> intro.remove(), 1000);
+
+        const panel = byId('panel');
+        panel.classList.add('active');
+
+        document.querySelectorAll('.link').forEach((link, i) => {
+            setTimeout(() => {
+                link.classList.add('fade-in');
+            }, 500 + (i * 60));
+        });
     }
 
-    // Also bind programmatically in case inline handler is stripped by CSP
-    (function bindStart(){
-        const el = byId('startBtn');
-        if (el){
-            el.addEventListener('click', userStart, {passive:true});
-            el.addEventListener('touchend', userStart, {passive:true});
+    document.querySelectorAll('.link, .tool-btn').forEach(el => {
+        el.addEventListener('mouseenter', () => AudioFX.play('hover'));
+        el.addEventListener('click', () => AudioFX.play('ack'));
+    });
+
+    // MASTER AUDIO TOGGLE
+    let isMuted = false;
+    const soundBtn = byId('soundToggle');
+    soundBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        AudioFX.setMuted(isMuted);
+        const icon = soundBtn.querySelector('i');
+
+        if(isMuted){
+            icon.className = 'ri-volume-mute-fill';
+            soundBtn.classList.add('active');
+        } else {
+            icon.className = 'ri-volume-up-fill';
+            soundBtn.classList.remove('active');
+            AudioFX.play('ack');
         }
-    })();
+    });
 
-    /* SFX & Ambience buttons */
-    (function soundButtons(){
-        const sfxBtn=byId('soundToggle'); const ambBtn=byId('ambToggle'); let muted=false;
-        const draw=()=>{ sfxBtn.textContent = muted? '🔇':'🔊'; updateAmbPressed(AudioFX.ambOn); };
-        sfxBtn.addEventListener('click', async ()=>{
-            await AudioFX.resume(); muted=!muted; AudioFX.setMuted(muted); AudioFX.play('ack'); draw();
-        });
-        ambBtn.addEventListener('click', async ()=>{
-            await AudioFX.resume(); setAmb(!AudioFX.ambOn); AudioFX.play('ack'); draw();
-        });
-        draw();
-    })();
+    byId('shareAll').addEventListener('click', async () => {
+        try { await navigator.share({title:"4liceD", url:location.href}); }
+        catch { navigator.clipboard.writeText(location.href); alert('Copied to clipboard'); }
+    });
 
-    /* Keyboard enter activates focused link (desktop) */
-    addEventListener('keydown', (e)=>{ if(e.key==='Enter' && document.activeElement?.classList.contains('link')) document.activeElement.click(); });
+    // VRCDN
+    const vrLink = byId('vr-stream-link');
+    if(vrLink){
+        vrLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const url = vrLink.getAttribute('href').replace('rtspt://', 'rtsp://');
+            const span = vrLink.querySelector('span');
+            const originalText = span.textContent;
+            try { await navigator.clipboard.writeText(url); span.textContent = "URL Copied!"; AudioFX.play('ack'); }
+            catch { span.textContent = "Copy Failed"; AudioFX.play('neg'); }
+            setTimeout(() => { span.textContent = originalText; }, 1500);
+        });
+    }
+
+    /* --- Visual FX --- */
+    const desc = byId('description');
+    const titles = ['Neurofunk Enjoyer','VR World Creator','3D Artist','Linux Nerd','I use arch btw'];
+    let tIdx = 0;
+    setInterval(() => {
+        desc.style.opacity = 0;
+        setTimeout(() => {
+            tIdx = (tIdx+1)%titles.length;
+            desc.textContent = titles[tIdx];
+            desc.style.opacity = 0.9;
+        }, 500);
+    }, 4000);
+
+    // FULL BACKGROUND LIST
+    const bgs = [
+        'background/1.webp', 'background/2.webp', 'background/3.webp',
+        'background/4.webp', 'background/5.webp', 'background/6.webp',
+        'background/7.webp', 'background/8.webp', 'background/9.webp',
+        'background/10.webp', 'background/11.webp', 'background/12.webp',
+        'background/13.webp', 'background/14.webp', 'background/15.webp'
+    ];
+    let bgIdx = 0;
+    setInterval(() => {
+        bgIdx = (bgIdx+1)%bgs.length;
+        const active = byId('bgA').classList.contains('top') ? byId('bgB') : byId('bgA');
+        const inactive = active.id === 'bgA' ? byId('bgB') : byId('bgA');
+        active.style.backgroundImage = `url('${bgs[bgIdx]}')`;
+        active.classList.add('top'); active.classList.remove('bottom');
+        inactive.classList.add('bottom'); inactive.classList.remove('top');
+    }, 6000);
+
+    const cvs = byId('fx'), ctx = cvs.getContext('2d');
+    let w, h;
+    const resize = () => { w=cvs.width=innerWidth; h=cvs.height=innerHeight; };
+    window.addEventListener('resize', resize); resize();
+
+    let time = 0;
+    function loop(){
+        time += 0.005;
+        ctx.clearRect(0,0,w,h);
+        ctx.strokeStyle = 'rgba(0,255,255,0.12)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for(let i=0; i<w; i+=80){ ctx.moveTo(i + Math.sin(time)*30, 0); ctx.lineTo(i - Math.sin(time)*30, h); }
+        const offset = (time * 60) % 60;
+        for(let j=0; j<h; j+=60){ let y = j + offset; ctx.moveTo(0, y); ctx.lineTo(w, y); }
+        ctx.stroke();
+        requestAnimationFrame(loop);
+    }
+    loop();
+
+    /* --- Secret Button --- */
+    const secretBtn = byId('secret-link');
+    let secretClicks = 0;
+    const msgs = ["ACCESS DENIED", "INVALID CREDENTIALS", "CLEARANCE: 0", "STOP", "OVERRIDE..."];
+    secretBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        secretClicks++;
+        const span = secretBtn.querySelector('span');
+        const original = "Classified";
+        if(secretClicks < 5) {
+            span.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+            span.style.color = '#ff3333';
+            AudioFX.play('neg');
+            setTimeout(() => { span.textContent = original; span.style.color = ''; }, 800);
+        } else {
+            AudioFX.play('data');
+            document.body.classList.add('glitch-active');
+            span.textContent = "EXECUTING...";
+            setTimeout(() => {
+                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+                document.body.classList.remove('glitch-active');
+                secretClicks = 0;
+                span.textContent = original;
+            }, 1200);
+        }
+    });
 </script>
 </body>
 </html>

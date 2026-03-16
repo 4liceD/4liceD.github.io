@@ -3,21 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NEON_DASH</title>
+  <title>NEON_DASH // SYS_OP</title>
 
-  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://4liced.github.io/neon_dash" />
   <meta property="og:title" content="NEON_DASH" />
   <meta property="og:description" content="NEON_DASH Startpage" />
   <meta property="og:image" content="https://4liced.github.io/neon_dash/neon_dash_embed.png" />
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://4liced.github.io/neon_dash" />
-  <meta property="twitter:title" content="NEON_DASH" />
-  <meta property="twitter:description" content="NEON_DASH Startpage" />
-  <meta property="twitter:image" content="https://4liced.github.io/neon_dash/neon_dash_embed.png" />
 
-  <!-- Font Awesome 7.0 (single stylesheet) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
 
   <style>
@@ -29,106 +23,169 @@
       --neon-green: #3cff00;
       --neon-yellow: #f9d423;
       --amber-light: #ffb347;
-      --dark-bg: #1a120b;
+      --panel-bg: rgba(15, 15, 18, 0.65);
+
+      /* DJ Knob Variables (Appeases the linter) */
+      --bass-level: 5;
+      --treble-level: 5;
     }
 
-    /* === SCANLINES ON TOP OF EVERYTHING === */
+    * {
+      box-sizing: border-box;
+    }
+
+    /* === GLOBAL BACKGROUND & GRID === */
     body {
-      background:
-              url('backdrop.webp') center/cover no-repeat fixed,
-              linear-gradient(to bottom, #1a120b, #0d0904);
+      background-color: #050505;
+      background-image:
+              linear-gradient(rgba(5, 5, 8, 0.3), rgba(10, 10, 15, 0.5)),
+              url('backdrop.webp');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       color: var(--amber-light);
       font-family: 'Courier New', monospace;
       margin: 0;
       min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    /* Scanlines overlay (top layer) */
-    body::after {
+    body::before {
       content: "";
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(
-              0deg,
-              rgba(0,0,0,0.5) 0px,
-              rgba(0,0,0,0.5) 1px,
-              transparent 1px,
-              transparent 2px
-      );
+      background-image:
+              linear-gradient(rgba(5, 217, 232, 0.07) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(5, 217, 232, 0.07) 1px, transparent 1px);
+      background-size: 30px 30px;
       pointer-events: none;
-      z-index: 9999; /* Topmost layer */
-      mix-blend-mode: overlay;
+      z-index: 0;
     }
 
-    /* === CONTAINER WITH DEPTH === */
-    .container {
-      position: relative;
+    #cursor-glow {
+      position: fixed;
+      top: 0; left: 0;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(5, 217, 232, 0.08) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
       z-index: 1;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-      max-width: 1400px;
-      margin: 10px auto;
-      padding: 15px;
-      background-color: rgba(26, 18, 11, 0.7);
-      backdrop-filter: blur(8px);
-      border-radius: 8px;
-      border: 1px solid var(--amber-light);
-      box-shadow:
-              inset 0 0 20px rgba(0,0,0,0.4),
-              0 0 30px rgba(0,0,0,0.6);
     }
 
-    /* === HEADER === */
+    /* === ANIMATIONS === */
+    @keyframes holo-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes boot-up {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-glow-amber {
+      0% { box-shadow: 0 0 5px var(--amber-light); }
+      50% { box-shadow: 0 0 15px var(--amber-light); }
+      100% { box-shadow: 0 0 5px var(--amber-light); }
+    }
+
+    @keyframes pulse-glow-blue {
+      0% { box-shadow: 0 0 5px var(--neon-blue); }
+      50% { box-shadow: 0 0 15px var(--neon-blue); }
+      100% { box-shadow: 0 0 5px var(--neon-blue); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* === MAIN CONTAINER === */
+    .container-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 90vh;
+      padding: 30px 15px 70px 15px;
+      position: relative;
+      z-index: 2;
+      animation: holo-float 8s ease-in-out infinite;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1400px;
+    }
+
+    /* === HEADER HUD === */
     header {
       grid-column: 1 / -1;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      padding: 10px 0;
-      margin-bottom: 5px;
-      border-bottom: 1px dashed var(--amber-light);
-      position: relative; /* for #datetime */
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      background: var(--panel-bg);
+      border-left: 4px solid var(--amber-light);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+
+      opacity: 0;
+      animation: boot-up 0.5s ease-out forwards;
     }
 
-    .logo {
-      height: 40px;
-      filter: drop-shadow(0 0 5px var(--amber-light));
-      transition: transform 0.3s ease;
-    }
-
-    .logo:hover { transform: scale(1.1); }
-
-    h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      text-shadow: 0 0 8px var(--amber-light);
-    }
-
-    #datetime {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
+    .header-left { display: flex; align-items: center; gap: 15px; }
+    .logo { height: 35px; filter: drop-shadow(0 0 5px var(--amber-light)); }
+    h1 { margin: 0; font-size: 1.6rem; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 8px rgba(255, 179, 71, 0.5); }
+    .header-right { text-align: right; }
+    .hud-data { font-size: 0.75rem; color: var(--neon-blue); opacity: 0.8; margin-bottom: 5px; letter-spacing: 1px; }
+    .data-value { color: var(--neon-green); font-weight: bold; }
+    #datetime { font-size: 1rem; font-weight: bold; color: var(--amber-light); }
 
     /* === CATEGORY CARDS === */
     .category-card {
-      background: rgba(26, 18, 11, 0.6);
-      border: 1px solid var(--amber-light);
-      border-radius: 6px;
-      padding: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      background: var(--panel-bg);
+      padding: 15px;
+      position: relative;
+      backdrop-filter: blur(8px);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      transition: background 0.3s ease;
+
+      opacity: 0;
+      animation: boot-up 0.5s ease-out forwards;
     }
 
+    .category-card:nth-child(2) { animation-delay: 0.1s; }
+    .category-card:nth-child(3) { animation-delay: 0.2s; }
+    .category-card:nth-child(4) { animation-delay: 0.3s; }
+    .category-card:nth-child(5) { animation-delay: 0.4s; }
+    .category-card:nth-child(6) { animation-delay: 0.5s; }
+    .category-card:nth-child(7) { animation-delay: 0.6s; }
+    .category-card:nth-child(8) { animation-delay: 0.7s; }
+
+    .category-card.dev { border-top: 2px solid var(--neon-yellow); }
+    .category-card.social { border-top: 2px solid var(--neon-pink); }
+    .category-card.vr { border-top: 2px solid var(--neon-purple); }
+    .category-card.local { border-top: 2px solid var(--neon-green); }
+    .category-card.linux { border-top: 2px solid var(--neon-blue); }
+    .category-card.email { border-top: 2px solid var(--neon-orange); }
+
     .category-title {
-      margin: 0 0 10px 0;
-      padding-bottom: 5px;
-      border-bottom: 1px dashed var(--amber-light);
-      font-size: 1.1rem;
-      text-shadow: 0 0 5px currentColor;
+      margin: 0 0 15px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     /* === ICON GRID === */
@@ -142,251 +199,318 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 8px 5px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
+      justify-content: center;
+      padding: 12px 5px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid transparent;
+      border-radius: 2px;
+      transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       cursor: pointer;
+      text-decoration: none;
     }
 
-    .icon-item:hover { background: rgba(255, 179, 71, 0.1); box-shadow: 0 0 8px currentColor; }
+    .icon-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid currentColor;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 12px currentColor;
+      transform: translateY(-3px);
+    }
 
-    .icon-item i { font-size: 1.5rem; margin-bottom: 3px; text-shadow: 0 0 5px currentColor; }
+    .icon-item i, .icon-item svg {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+      transition: text-shadow 0.2s, transform 0.2s;
+    }
 
-    .icon-item span { font-size: 0.8rem; text-align: center; }
+    .icon-item:hover i, .icon-item:hover svg {
+      text-shadow: 0 0 12px currentColor;
+      transform: scale(1.1);
+    }
 
-    .tiktok-icon { width: 27px; height: 27px; fill: currentColor; margin-right: 8px; vertical-align: middle; }
+    .icon-item span {
+      font-size: 0.75rem;
+      text-align: center;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .tiktok-icon { width: 22px; height: 22px; fill: currentColor; }
+
+    /* === COLOR CODING CLASSES === */
+    .dev { color: var(--neon-yellow); text-shadow: 0 0 5px rgba(249, 212, 35, 0.6); }
+    .social { color: var(--neon-pink); text-shadow: 0 0 5px rgba(255, 42, 109, 0.6); }
+    .vr { color: var(--neon-purple); text-shadow: 0 0 5px rgba(211, 0, 197, 0.6); }
+    .local { color: var(--neon-green); text-shadow: 0 0 5px rgba(60, 255, 0, 0.6); }
+    .linux { color: var(--neon-blue); text-shadow: 0 0 5px rgba(5, 217, 232, 0.6); }
+    .email { color: var(--neon-orange); text-shadow: 0 0 5px rgba(255, 140, 66, 0.6); }
 
     /* === MINIMALIST CALENDAR === */
-    .calendar { margin-top: auto; padding: 10px; background: rgba(26, 18, 11, 0.5); border-radius: 6px; border: 1px dashed var(--amber-light); }
-    .calendar-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-    .calendar-day { padding: 5px; font-size: 0.8rem; }
-    .calendar-day.today { background: var(--amber-light); color: var(--dark-bg); border-radius: 3px; font-weight: bold; }
+    .calendar {
+      border-top: 2px solid var(--neon-blue) !important;
+    }
+    .calendar-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; letter-spacing: 1px; color: var(--neon-blue); text-shadow: 0 0 5px rgba(5, 217, 232, 0.6);}
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+    .calendar-day { padding: 6px 0; font-size: 0.8rem; background: rgba(0,0,0,0.3); color: rgba(255, 255, 255, 0.7); }
+    .calendar-day.today {
+      background: var(--neon-blue);
+      color: #000;
+      font-weight: bold;
+      animation: pulse-glow-blue 2.5s infinite ease-in-out;
+    }
+
+    /* === TERMINAL & DJ === */
+    .terminal-window { font-family: 'Courier New', monospace; padding: 0.5rem; height: 110px; overflow-y: auto; background: rgba(0,0,0,0.5); font-size: 0.85rem;}
+    .terminal-cursor { animation: blink 1s infinite step-end; }
+    .dj-box { background: rgba(0,0,0,0.5); border: 1px solid rgba(60, 255, 0, 0.2); padding: 10px; text-align: center; margin-top: 5px; }
+
+    /* Moving DJ Knobs to CSS to stop IDE linting errors */
+    .dj-knobs-container { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }
+    #bass-knob, #treble-knob { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; }
+    #bass-knob { background: conic-gradient(var(--neon-green) 0% calc(var(--bass-level) * 10%), rgba(255,255,255,0.1) calc(var(--bass-level) * 10%) 100%); }
+    #treble-knob { background: conic-gradient(var(--neon-green) 0% calc(var(--treble-level) * 10%), rgba(255,255,255,0.1) calc(var(--treble-level) * 10%) 100%); }
 
     /* Footer */
-    footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 10px 0; font-size: 0.8rem; color: var(--amber-light); text-shadow: 0 0 5px var(--amber-light); background: rgba(26, 18, 11, 0.9); backdrop-filter: blur(4px); border-top: 1px dashed var(--amber-light); z-index: 10000; }
-    footer a { color: var(--amber-light); text-decoration: none; transition: text-shadow 0.3s ease; }
-    footer a:hover { text-shadow: 0 0 8px var(--amber-light); }
+    footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 8px 0; font-size: 0.75rem; color: rgba(255, 179, 71, 0.5); background: rgba(5,5,5,0.9); border-top: 1px solid rgba(255, 179, 71, 0.2); z-index: 10000; letter-spacing: 1px;}
+    footer a { color: inherit; text-decoration: none; transition: color 0.3s ease; }
+    footer a:hover { color: var(--neon-blue); }
 
-    /* Color classes */
-    .social { color: var(--neon-pink); }
-    .dev { color: var(--neon-yellow); }
-    .vr { color: var(--neon-purple); }
-    .local { color: var(--neon-green); }
-    .linux { color: var(--neon-blue); }
-    .email { color: var(--neon-orange); }
-
-    /* TERMINAL STYLING */
-    .terminal-window { font-family: 'Courier New', monospace; padding: 0.5rem; height: 120px; overflow-y: auto; background-color: transparent !important; }
-    #terminalOutput { margin: 0; line-height: 1.4; white-space: pre; word-break: break-word; }
-    .terminal-cursor { animation: blink 1s infinite step-end; color: var(--amber-light); }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    /* Respect reduced motion */
+    /* Respect reduced motion settings */
     @media (prefers-reduced-motion: reduce) {
-      .terminal-cursor { animation: none; }
+      .container-wrapper { animation: none; }
+      .icon-item:hover { transform: none; }
+      header, .category-card { animation-duration: 0.01s; }
+      .calendar-day.today { animation: none; box-shadow: 0 0 5px var(--neon-blue); }
     }
   </style>
 
-  <!-- Favicon (inline SVG) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><style>path{fill:%23FFA500}</style><path d='M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z'/></svg>">
 </head>
 <body>
-<div class="container">
-  <header>
-    <img src="4LICED_White.webp" alt="Logo" class="logo" />
-    <h1>NEON_DASH</h1>
-    <div id="datetime">[LOADING...]</div>
-  </header>
 
-  <!-- Development -->
-  <div class="category-card">
-    <h3 class="category-title dev">DEV</h3>
-    <div class="icon-grid">
-      <div class="icon-item dev" onclick="window.open('https://github.com', '_blank', 'noopener,noreferrer')" aria-label="GitHub">
-        <i class="fa-brands fa-github"></i>
-        <span>GitHub</span>
-      </div>
-      <div class="icon-item dev" onclick="window.open('https://hammertime.cyou', '_blank', 'noopener,noreferrer')" aria-label="Hammertime">
-        <i class="fa-solid fa-hammer"></i>
-        <span>Hammertime</span>
-      </div>
-      <!-- Add more dev icons here if you like -->
-    </div>
-  </div>
+<div id="cursor-glow"></div>
 
-  <!-- Social -->
-  <div class="category-card">
-    <h3 class="category-title social">SOCIAL</h3>
-    <div class="icon-grid">
-      <div class="icon-item social" onclick="window.open('https://youtube.com', '_blank', 'noopener,noreferrer')" aria-label="YouTube">
-        <i class="fa-brands fa-youtube"></i>
-        <span>YouTube</span>
-      </div>
-      <div class="icon-item social" onclick="window.open('https://twitter.com', '_blank', 'noopener,noreferrer')" aria-label="Twitter">
-        <i class="fa-brands fa-x-twitter"></i>
-        <span>Twitter</span>
-      </div>
-      <div class="icon-item social" onclick="window.open('https://bsky.app', '_blank', 'noopener,noreferrer')" aria-label="Bluesky">
-        <i class="fa-solid fa-cloud"></i>
-        <span>Bluesky</span>
-      </div>
-      <div class="icon-item social" onclick="window.open('https://www.instagram.com', '_blank', 'noopener,noreferrer')" aria-label="Instagram">
-        <i class="fa-brands fa-instagram"></i>
-        <span>Instagram</span>
-      </div>
-      <div class="icon-item social" onclick="window.open('https://www.tiktok.com', '_blank', 'noopener,noreferrer')" aria-label="TikTok">
-        <!-- TikTok SVG icon -->
-        <svg class="tiktok-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true">
-          <path d="M448,209.9v125.5c-32.6,0-64.1-6.5-93.4-18.3v112.1c0,45.3-18.2,86.4-47.7,116.1C277.3,571.4,236.3,590,191.1,590
-      c-52.5,0-100.2-21.2-134.7-55.7C21.7,499.9,0.4,452.2,0.4,399.7c0-52.4,21.2-100.1,55.7-134.6c34.6-34.5,82.2-55.7,134.7-55.7
-      c11.8,0,23.3,1.1,34.4,3.2v94.3c-11-3.7-22.7-5.7-34.4-5.7c-52.5,0-95.3,42.8-95.3,95.3s42.8,95.3,95.3,95.3
-      c52.5,0,95.3-42.8,95.3-95.3V0H354c7.6,38.1,38.4,68.9,76.4,76.4V209.9z"/>
-        </svg>
-        <span>TikTok</span>
-      </div>
-    </div>
-  </div>
+<div class="container-wrapper">
+  <div class="container" id="main-container">
 
-  <!-- VR -->
-  <div class="category-card">
-    <h3 class="category-title vr">VR</h3>
-    <div class="icon-grid">
-      <div class="icon-item vr" onclick="window.open('https://vrchat.com', '_blank', 'noopener,noreferrer')" aria-label="VRChat">
-        <i class="fa-solid fa-vr-cardboard"></i>
-        <span>VRChat</span>
+    <header>
+      <div class="header-left">
+        <img src="4LICED_White.webp" alt="Logo" class="logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2235%22 height=%2235%22><rect width=%2235%22 height=%2235%22 fill=%22none%22 stroke=%22%23ffb347%22 stroke-width=%224%22/><path d=%22M10 10 L25 25 M25 10 L10 25%22 stroke=%22%23ffb347%22 stroke-width=%222%22/></svg>'" />
+        <h1>NEON_DASH</h1>
       </div>
-      <div class="icon-item vr" onclick="window.open('https://vrc.tl', '_blank', 'noopener,noreferrer')" aria-label="vrc.tl">
-        <i class="fa-solid fa-music"></i>
-        <span>vrc.tl</span>
-      </div>
-      <div class="icon-item vr" onclick="window.open('https://boothplorer.com/', '_blank', 'noopener,noreferrer')" aria-label="Boothplorer">
-        <i class="fa-solid fa-compass"></i>
-        <span>Boothplorer</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Local -->
-  <div class="category-card">
-    <h3 class="category-title local">LOCAL</h3>
-    <div class="icon-grid">
-      <div class="icon-item local" onclick="window.open('http://192.168.178.11:9090', '_blank', 'noopener,noreferrer')" aria-label="Server">
-        <i class="fa-solid fa-layer-group"></i>
-        <span>Server</span>
-      </div>
-      <div class="icon-item local" onclick="window.open('http://192.168.178.11:1010/admin/', '_blank', 'noopener,noreferrer')" aria-label="Pi-hole">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span>Pi-hole</span>
-      </div>
-        <div class="icon-item local" onclick="window.open('https://192.168.178.10/admin/', '_blank', 'noopener,noreferrer')" aria-label="Pi-hole 2">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>Pi-hole 2</span>
+      <div class="header-right">
+        <div class="hud-data">
+          LOAD: <span id="sys-load" class="data-value">12%</span> //
+          MEM: <span id="sys-mem" class="data-value">0x8F3A</span>
         </div>
-      <div class="icon-item local" onclick="window.open('http://192.168.178.11:8000', '_blank', 'noopener,noreferrer')" aria-label="SillyTavern">
-        <i class="fa-solid fa-robot"></i>
-        <span>SillyTavern</span>
+        <div id="datetime">[LOADING_SYNC...]</div>
       </div>
-      <div class="icon-item local" onclick="window.open('https://192.168.178.11:9443', '_blank', 'noopener,noreferrer')" aria-label="Portainer">
-        <i class="fa-brands fa-docker"></i>
-        <span>Portainer</span>
+    </header>
+
+    <div class="category-card dev">
+      <h3 class="category-title dev">DEV_ENV</h3>
+      <div class="icon-grid">
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="icon-item dev">
+          <i class="fa-brands fa-github"></i>
+          <span>GitHub</span>
+        </a>
+        <a href="https://hammertime.cyou" target="_blank" rel="noopener noreferrer" class="icon-item dev">
+          <i class="fa-solid fa-hammer"></i>
+          <span>Hammertime</span>
+        </a>
       </div>
     </div>
-  </div>
 
-  <!-- Linux -->
-  <div class="category-card">
-    <h3 class="category-title linux">LINUX</h3>
-    <div class="icon-grid">
-      <div class="icon-item linux" onclick="window.open('https://www.kernel.org', '_blank', 'noopener,noreferrer')" aria-label="Kernel">
-        <i class="fa-solid fa-terminal"></i>
-        <span>Kernel</span>
-      </div>
-      <div class="icon-item linux" onclick="window.open('https://archlinux.org', '_blank', 'noopener,noreferrer')" aria-label="Arch Linux">
-        <i class="fa-solid fa-mountain"></i>
-        <span>Arch</span>
-      </div>
-      <div class="icon-item linux" onclick="window.open('https://fedoraproject.org', '_blank', 'noopener,noreferrer')" aria-label="Fedora">
-        <i class="fa-brands fa-redhat"></i>
-        <span>Fedora</span>
-      </div>
-      <div class="icon-item linux" onclick="window.open('https://wiki.cachyos.org/', '_blank', 'noopener,noreferrer')" aria-label="CachyOS">
-        <i class="fa-solid fa-c"></i>
-        <span>CachyOS</span>
+    <div class="category-card social">
+      <h3 class="category-title social">NET_SOCIAL</h3>
+      <div class="icon-grid">
+        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="icon-item social">
+          <i class="fa-brands fa-youtube"></i>
+          <span>YouTube</span>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="icon-item social">
+          <i class="fa-brands fa-x-twitter"></i>
+          <span>Twitter</span>
+        </a>
+        <a href="https://bsky.app" target="_blank" rel="noopener noreferrer" class="icon-item social">
+          <i class="fa-solid fa-cloud"></i>
+          <span>Bluesky</span>
+        </a>
+        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="icon-item social">
+          <i class="fa-brands fa-instagram"></i>
+          <span>Insta</span>
+        </a>
+        <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" class="icon-item social">
+          <svg class="tiktok-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M448,209.9v125.5c-32.6,0-64.1-6.5-93.4-18.3v112.1c0,45.3-18.2,86.4-47.7,116.1C277.3,571.4,236.3,590,191.1,590 c-52.5,0-100.2-21.2-134.7-55.7C21.7,499.9,0.4,452.2,0.4,399.7c0-52.4,21.2-100.1,55.7-134.6c34.6-34.5,82.2-55.7,134.7-55.7 c11.8,0,23.3,1.1,34.4,3.2v94.3c-11-3.7-22.7-5.7-34.4-5.7c-52.5,0-95.3,42.8-95.3,95.3s42.8,95.3,95.3,95.3 c52.5,0,95.3-42.8,95.3-95.3V0H354c7.6,38.1,38.4,68.9,76.4,76.4V209.9z"/>
+          </svg>
+          <span>TikTok</span>
+        </a>
       </div>
     </div>
-  </div>
 
-  <!-- Comms -->
-  <div class="category-card">
-    <h3 class="category-title email">COMMS</h3>
-    <div class="icon-grid">
-      <div class="icon-item email" onclick="window.open('https://mail.google.com', '_blank', 'noopener,noreferrer')" aria-label="Gmail">
-        <i class="fa-solid fa-envelope"></i>
-        <span>Gmail</span>
+    <div class="category-card vr">
+      <h3 class="category-title vr">DIVE_VR</h3>
+      <div class="icon-grid">
+        <a href="https://vrchat.com" target="_blank" rel="noopener noreferrer" class="icon-item vr">
+          <i class="fa-solid fa-vr-cardboard"></i>
+          <span>VRChat</span>
+        </a>
+        <a href="https://vrc.tl" target="_blank" rel="noopener noreferrer" class="icon-item vr">
+          <i class="fa-solid fa-music"></i>
+          <span>vrc.tl</span>
+        </a>
+        <a href="https://boothplorer.com/" target="_blank" rel="noopener noreferrer" class="icon-item vr">
+          <i class="fa-solid fa-compass"></i>
+          <span>Boothplorer</span>
+        </a>
       </div>
-      <div class="icon-item email" onclick="window.open('https://web.whatsapp.com', '_blank', 'noopener,noreferrer')" aria-label="WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
-        <span>WhatsApp</span>
+    </div>
+
+    <div class="category-card local">
+      <h3 class="category-title local">SYS_LOCAL</h3>
+      <div class="icon-grid">
+        <a href="http://192.168.178.11:9090" target="_blank" rel="noopener noreferrer" class="icon-item local">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Server</span>
+        </a>
+        <a href="http://192.168.178.11:1010/admin/" target="_blank" rel="noopener noreferrer" class="icon-item local">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Pi-hole</span>
+        </a>
+        <a href="https://192.168.178.10/admin/" target="_blank" rel="noopener noreferrer" class="icon-item local">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Pi-hole 2</span>
+        </a>
+        <a href="http://192.168.178.11:8000" target="_blank" rel="noopener noreferrer" class="icon-item local">
+          <i class="fa-solid fa-robot"></i>
+          <span>Tavern</span>
+        </a>
+        <a href="https://192.168.178.11:9443" target="_blank" rel="noopener noreferrer" class="icon-item local">
+          <i class="fa-brands fa-docker"></i>
+          <span>Portainer</span>
+        </a>
       </div>
-        <div class="icon-item email" onclick="window.open('https://mail.zoho.eu', '_blank', 'noopener,noreferrer')" aria-label="Zoho">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span>Zoho</span>
+    </div>
+
+    <div class="category-card linux">
+      <h3 class="category-title linux">OS_LINUX</h3>
+      <div class="icon-grid">
+        <a href="https://www.kernel.org" target="_blank" rel="noopener noreferrer" class="icon-item linux">
+          <i class="fa-solid fa-terminal"></i>
+          <span>Kernel</span>
+        </a>
+        <a href="https://archlinux.org" target="_blank" rel="noopener noreferrer" class="icon-item linux">
+          <i class="fa-solid fa-mountain"></i>
+          <span>Arch</span>
+        </a>
+        <a href="https://fedoraproject.org" target="_blank" rel="noopener noreferrer" class="icon-item linux">
+          <i class="fa-brands fa-redhat"></i>
+          <span>Fedora</span>
+        </a>
+        <a href="https://wiki.cachyos.org/" target="_blank" rel="noopener noreferrer" class="icon-item linux">
+          <i class="fa-solid fa-c"></i>
+          <span>CachyOS</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="category-card email">
+      <h3 class="category-title email">COMMS_LINK</h3>
+      <div class="icon-grid">
+        <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" class="icon-item email">
+          <i class="fa-solid fa-envelope"></i>
+          <span>Gmail</span>
+        </a>
+        <a href="https://web.whatsapp.com" target="_blank" rel="noopener noreferrer" class="icon-item email">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>WhatsApp</span>
+        </a>
+        <a href="https://mail.zoho.eu" target="_blank" rel="noopener noreferrer" class="icon-item email">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Zoho</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="category-card" style="border-top: 2px solid var(--neon-green);">
+      <h3 class="category-title" style="color: var(--neon-green); text-shadow: 0 0 5px rgba(60, 255, 0, 0.6);">AUX_SYSTEMS</h3>
+
+      <div class="terminal-window" style="color: var(--neon-green);">
+        <span>[SYS]</span> NEON_DASH v0.9.9<br />
+        <span>guest@local</span>:~$ <span id="terminal-command"></span><span class="terminal-cursor" style="color: var(--neon-green);">█</span>
+      </div>
+
+      <div class="dj-box">
+        <pre id="ascii-dj" style="color: var(--neon-green); text-shadow: 0 0 5px rgba(60, 255, 0, 0.6); font-size: 14px; margin: 0; height: 16px; cursor: pointer;">(■_■) Start Audio_Vis</pre>
+        <div class="dj-knobs-container">
+          <div id="bass-knob"></div>
+          <div id="treble-knob"></div>
         </div>
-    </div>
-  </div>
-
-  <!-- DJ -->
-  <div class="category-card" style="background: rgba(26, 18, 11, 0.6); border: 1px solid var(--amber-light); border-radius: 6px; padding: 12px;">
-    <h3 class="category-title" style="margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 1px dashed var(--amber-light); font-size: 1.1rem; text-shadow: 0 0 5px var(--amber-light); color: var(--amber-light);">ASCII DJ</h3>
-    <div style="background: rgba(0,0,0,0.3); border: 1px dashed var(--amber-light); border-radius: 4px; padding: 10px; text-align: center;">
-      <pre id="ascii-dj" style="color: var(--amber-light); font-family: monospace; font-size: 16px; line-height: 1; margin: 0; height: 20px; text-shadow: 0 0 5px var(--amber-light); cursor: pointer;">(■_■) Tap to Start</pre>
-      <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
-        <!-- Bass Knob (Speed Control) -->
-        <div id="bass-knob" style="width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(var(--amber-light) 0% calc(var(--bass-level, 5) * 10%), rgba(255,255,255,0.1) calc(var(--bass-level, 5) * 10%) 100%); cursor: pointer; transition: transform 0.1s;"></div>
-        <!-- Treble Knob (Glow Control) -->
-        <div id="treble-knob" style="width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(var(--amber-light) 0% calc(var(--treble-level, 5) * 10%), rgba(255,255,255,0.1) calc(var(--treble-level, 5) * 10%) 100%); cursor: pointer; transition: transform 0.1s;"></div>
       </div>
     </div>
-  </div>
 
-  <!-- Terminal -->
-  <div class="category-card">
-    <h3 class="category-title terminal-title">root@neon-dash:~</h3>
-    <div class="terminal-window">
-      <span class="terminal-output">⚡ <span style="color:var(--amber-light)">System:</span><br />NEON_DASH v0.6.9</span><br />
-      <span class="terminal-output"><span class="terminal-user">visitor@dash</span>:<span class="terminal-output">~/social</span>$
-          <span class="terminal-output" id="terminal-command">sudo rm -rf /*</span><span class="terminal-cursor">█</span></span>
+    <div class="category-card calendar">
+      <div class="calendar-header">
+        <span id="current-month">--</span>
+        <span id="current-year">----</span>
+      </div>
+      <div class="calendar-grid" id="calendar-days"></div>
     </div>
-  </div>
-
-  <!-- Calendar -->
-  <div class="calendar">
-    <div class="calendar-header">
-      <span id="current-month">July</span>
-      <span id="current-year">2024</span>
-    </div>
-    <div class="calendar-grid" id="calendar-days"><!-- Generated by JS --></div>
   </div>
 </div>
 
 <footer>
-  4liceD © 2025 - <a href="mailto:4liced@4liced.com">Contact: 4liced@4liced.com</a>
+  SYS_ADMIN: 4liceD © 2026 // <a href="mailto:4liced@4liced.com">SECURE_COMMS: 4liced@4liced.com</a>
 </footer>
 
 <script>
-  // Calendar generation
+  // CURSOR GLOW
+  const cursorGlow = document.getElementById('cursor-glow');
+  document.addEventListener('mousemove', (e) => {
+    requestAnimationFrame(() => {
+      cursorGlow.style.left = e.clientX + 'px';
+      cursorGlow.style.top = e.clientY + 'px';
+    });
+  });
+
+  // LIVE SYSTEM MONITORS
+  function updateSysStats() {
+    const loadEl = document.getElementById('sys-load');
+    let currentLoad = parseInt(loadEl.innerText);
+    let fluctuation = Math.floor(Math.random() * 5) - 2;
+    let newLoad = Math.max(8, Math.min(24, currentLoad + fluctuation));
+    if (Math.random() > 0.95) newLoad = Math.floor(Math.random() * 40) + 40;
+    loadEl.innerText = newLoad + '%';
+
+    const hexChars = '0123456789ABCDEF';
+    let hexString = '0x';
+    for (let i = 0; i < 4; i++) {
+      hexString += hexChars[Math.floor(Math.random() * 16)];
+    }
+    document.getElementById('sys-mem').innerText = hexString;
+  }
+  setInterval(updateSysStats, 800);
+
+  // CALENDAR
   function generateCalendar() {
     const now = new Date();
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
     document.getElementById('current-month').textContent = monthNames[now.getMonth()];
     document.getElementById('current-year').textContent = now.getFullYear();
     const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
     let calendarHTML = '';
     const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    dayNames.forEach(day => { calendarHTML += `<div class="calendar-day">${day}</div>`; });
-    for (let i = 0; i < firstDay; i++) { calendarHTML += `<div class="calendar-day"></div>`; }
+
+    // Day headers in neon blue
+    dayNames.forEach(day => {
+      calendarHTML += `<div class="calendar-day" style="color:var(--neon-blue); text-shadow: 0 0 5px rgba(5,217,232,0.4); background:none; font-weight:bold;">${day}</div>`;
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+      calendarHTML += `<div class="calendar-day" style="background:none;"></div>`;
+    }
+
     for (let day = 1; day <= daysInMonth; day++) {
       const isToday = day === now.getDate();
       calendarHTML += `<div class="calendar-day ${isToday ? 'today' : ''}">${day}</div>`;
@@ -395,10 +519,10 @@
   }
   generateCalendar();
 
-  // Date/time ticker
+  // DATE/TIME TICKER
   function updateDateTime() {
     const now = new Date();
-    document.getElementById('datetime').textContent = `[${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit', hour12: false })}]`;
+    document.getElementById('datetime').textContent = `[ ${now.toLocaleTimeString('en-US', { hour12: false })} ]`;
   }
   updateDateTime();
   setInterval(updateDateTime, 1000);
@@ -407,72 +531,89 @@
   const faces = [
     '(⌐■_■)', '( •_•)>⌐■-■', '(☉_☉)', '(◕‿◕✿)', '( ͡° ͜ʖ ͡°)', '(ง •̀_•́)ง',
     '(╯°□°）╯︵ ┻━┻', '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧', '(˵ ͡° ͜ʖ ͡°˵)', '(👁 ͜ʖ👁)',
-    '(≧∇≦)ﾉ', '(ノಠ益ಠ)ノ', '(ᵔᴥᵔ)', '(¬‿¬)', '(◠‿◠✿)', '(ಥ_ಥ)',
-    '(づ￣ ³￣)づ', '(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧', '(•̀ᴗ•́)و', '( ˘ ³˘)♥'
+    '(≧∇≦)ﾉ', '(ノಠ益ಠ)ノ', '(ᵔᴥᵔ)', '(¬‿¬)', '(◠‿◠✿)', '(ಥ_ಥ)'
   ];
   const dj = document.getElementById('ascii-dj');
   let isPlaying = false;
   let animSpeed = 500;
   let animInterval;
   let currentFace = 0;
-  dj.addEventListener('click', toggleAnimation);
-  function toggleAnimation() {
+  dj.addEventListener('click', () => {
     isPlaying = !isPlaying;
     if (isPlaying) {
-      dj.textContent = `${faces[currentFace]} BPM: ${Math.floor(60000/animSpeed)}`;
-      animInterval = setInterval(animateFace, animSpeed);
+      dj.textContent = `${faces[currentFace]} BPM:${Math.floor(60000/animSpeed)}`;
+      animInterval = setInterval(() => {
+        currentFace = (currentFace + 1) % faces.length;
+        dj.textContent = `${faces[currentFace]} BPM:${Math.floor(60000/animSpeed)}`;
+      }, animSpeed);
     } else {
       clearInterval(animInterval);
-      dj.textContent = '(■_■) Tap to Start';
+      dj.textContent = '(■_■) Audio_Vis Paused';
     }
-  }
-  function animateFace() {
-    currentFace = (currentFace + 1) % faces.length;
-    dj.textContent = `${faces[currentFace]} BPM: ${Math.floor(60000/animSpeed)}`;
-  }
+  });
+
   const bassKnob = document.getElementById('bass-knob');
   let bassLevel = 5;
   bassKnob.addEventListener('click', () => {
     bassLevel = bassLevel < 10 ? bassLevel + 1 : 0;
-    bassKnob.style.setProperty('--bass-level', bassLevel);
+    document.documentElement.style.setProperty('--bass-level', bassLevel);
     animSpeed = 1000 - (bassLevel * 80);
-    if (isPlaying) { clearInterval(animInterval); animInterval = setInterval(animateFace, animSpeed); }
-    bassKnob.style.transform = 'scale(0.9)';
-    setTimeout(() => bassKnob.style.transform = '', 100);
+    if (isPlaying) {
+      clearInterval(animInterval);
+      animInterval = setInterval(() => {
+        currentFace = (currentFace + 1) % faces.length;
+        dj.textContent = `${faces[currentFace]} BPM:${Math.floor(60000/animSpeed)}`;
+      }, animSpeed);
+    }
   });
+
   const trebleKnob = document.getElementById('treble-knob');
   let trebleLevel = 5;
   trebleKnob.addEventListener('click', () => {
     trebleLevel = trebleLevel < 10 ? trebleLevel + 1 : 0;
-    trebleKnob.style.setProperty('--treble-level', trebleLevel);
-    dj.style.textShadow = `0 0 ${5 + trebleLevel}px var(--neon-blue)`;
-    trebleKnob.style.transform = 'scale(0.9)';
-    setTimeout(() => trebleKnob.style.transform = '', 100);
+    document.documentElement.style.setProperty('--treble-level', trebleLevel);
   });
 
-  // Terminal gag
+  // TERMINAL TYPEWRITER GAG
   const commands = [
-    "git commit --message 'oops'",
+    "./override_mainframe.sh",
+    "ping -c 4 192.168.178.1",
+    "tail -f /var/log/syslog",
+    "ssh root@dataserver",
+    "nmap -sV 192.168.1.0/24",
+    "python3 neural_net.py",
     "rm -rf /dev/null",
-    "echo 'Hello World'",
-    ":(){ :|:& };:",
-    "echo 'Why is /dev/null always empty??'",
-    "cat meme.jpg | lolcat --spread 69",
-    "ping 127.0.0.1 -c 420",
-    "git push --force origin main",
-    "rm -rf / --no-preserve-root",
-    "echo '404: Vibe Not Found'",
+    "decrypt --force target.enc",
+    "docker run hello-world",
+    "fastfetch",      
   ];
+
+  let typeInterval;
+  function typeCommand(text, element) {
+    element.textContent = "";
+    let i = 0;
+    clearInterval(typeInterval);
+    typeInterval = setInterval(() => {
+      element.textContent += text.charAt(i);
+      i++;
+      if (i >= text.length) clearInterval(typeInterval);
+    }, 50);
+  }
+
   function swapCommand() {
     const commandElement = document.getElementById("terminal-command");
     if (!commandElement) return;
     let newCmd;
     do { newCmd = commands[Math.floor(Math.random() * commands.length)]; }
     while (newCmd === commandElement.textContent && commands.length > 1);
-    commandElement.textContent = newCmd;
+    typeCommand(newCmd, commandElement);
   }
-  setInterval(swapCommand, 3000);
-  swapCommand();
+
+  setTimeout(() => {
+    swapCommand();
+    setInterval(swapCommand, 6000);
+  }, 1000);
+
 </script>
 </body>
 </html>

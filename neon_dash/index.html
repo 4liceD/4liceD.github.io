@@ -24,6 +24,13 @@
       --neon-yellow: #f9d423;
       --amber-light: #ffb347;
       --panel-bg: rgba(15, 15, 18, 0.65);
+      --panel-bg-strong: rgba(10, 10, 14, 0.84);
+      --space-s: 10px;
+      --space-m: 15px;
+      --space-l: 20px;
+      --dur-fast: 0.2s;
+      --dur-base: 0.3s;
+      --ease-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
       /* DJ Knob Variables (Appeases the linter) */
       --bass-level: 5;
@@ -49,6 +56,7 @@
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
+      line-height: 1.45;
     }
 
     body::before {
@@ -61,6 +69,15 @@
       background-size: 30px 30px;
       pointer-events: none;
       z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(90% 70% at 50% 100%, rgba(0, 0, 0, 0.7), transparent 60%);
     }
 
     #cursor-glow {
@@ -130,7 +147,7 @@
       justify-content: space-between;
       padding: 15px 20px;
       margin-bottom: 10px;
-      background: var(--panel-bg);
+      background: linear-gradient(180deg, rgba(18, 18, 22, 0.82), var(--panel-bg-strong));
       border-left: 4px solid var(--amber-light);
       clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
       backdrop-filter: blur(8px);
@@ -150,18 +167,23 @@
 
     /* === CATEGORY CARDS === */
     .category-card {
-      background: var(--panel-bg);
-      padding: 15px;
+      background: linear-gradient(180deg, rgba(16, 16, 20, 0.8), var(--panel-bg-strong));
+      padding: var(--space-m);
       position: relative;
       backdrop-filter: blur(8px);
       clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       border-left: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-      transition: background 0.3s ease;
+      transition: transform var(--dur-fast) var(--ease-standard), background var(--dur-base) ease, box-shadow var(--dur-base) ease, border-color var(--dur-base) ease;
 
       opacity: 0;
       animation: boot-up 0.5s ease-out forwards;
+    }
+    .category-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .category-card:nth-child(2) { animation-delay: 0.1s; }
@@ -204,7 +226,7 @@
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid transparent;
       border-radius: 2px;
-      transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: transform var(--dur-fast) var(--ease-standard), background var(--dur-fast) ease, border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
       cursor: pointer;
       text-decoration: none;
     }
@@ -214,6 +236,14 @@
       border: 1px solid currentColor;
       box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 12px currentColor;
       transform: translateY(-3px);
+    }
+    .icon-item:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2), inset 0 0 15px rgba(0,0,0,0.8), 0 0 12px currentColor;
+    }
+    .icon-item:active {
+      transform: scale(0.97);
     }
 
     .icon-item i, .icon-item svg {
@@ -269,17 +299,33 @@
     #bass-knob { background: conic-gradient(var(--neon-green) 0% calc(var(--bass-level) * 10%), rgba(255,255,255,0.1) calc(var(--bass-level) * 10%) 100%); }
     #treble-knob { background: conic-gradient(var(--neon-green) 0% calc(var(--treble-level) * 10%), rgba(255,255,255,0.1) calc(var(--treble-level) * 10%) 100%); }
 
+    .aux-card { border-top: 2px solid var(--neon-green); }
+    .aux-title { color: var(--neon-green); text-shadow: 0 0 5px rgba(60, 255, 0, 0.6); }
+    .aux-terminal { color: var(--neon-green); }
+    .aux-cursor { color: var(--neon-green); }
+    .ascii-dj {
+      color: var(--neon-green);
+      text-shadow: 0 0 5px rgba(60, 255, 0, 0.6);
+      font-size: 14px;
+      margin: 0;
+      min-height: 16px;
+      cursor: pointer;
+    }
+
     /* Footer */
     footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 8px 0; font-size: 0.75rem; color: rgba(255, 179, 71, 0.5); background: rgba(5,5,5,0.9); border-top: 1px solid rgba(255, 179, 71, 0.2); z-index: 10000; letter-spacing: 1px;}
     footer a { color: inherit; text-decoration: none; transition: color 0.3s ease; }
     footer a:hover { color: var(--neon-blue); }
+    footer a:focus-visible { outline: 2px solid var(--neon-blue); outline-offset: 2px; }
 
     /* Respect reduced motion settings */
     @media (prefers-reduced-motion: reduce) {
       .container-wrapper { animation: none; }
       .icon-item:hover { transform: none; }
+      .category-card:hover { transform: none; }
       header, .category-card { animation-duration: 0.01s; }
       .calendar-day.today { animation: none; box-shadow: 0 0 5px var(--neon-blue); }
+      #cursor-glow { display: none; }
     }
   </style>
 
@@ -432,16 +478,16 @@
       </div>
     </div>
 
-    <div class="category-card" style="border-top: 2px solid var(--neon-green);">
-      <h3 class="category-title" style="color: var(--neon-green); text-shadow: 0 0 5px rgba(60, 255, 0, 0.6);">AUX_SYSTEMS</h3>
+    <div class="category-card aux-card">
+      <h3 class="category-title aux-title">AUX_SYSTEMS</h3>
 
-      <div class="terminal-window" style="color: var(--neon-green);">
+      <div class="terminal-window aux-terminal">
         <span>[SYS]</span> NEON_DASH v0.9.9<br />
-        <span>guest@local</span>:~$ <span id="terminal-command"></span><span class="terminal-cursor" style="color: var(--neon-green);">█</span>
+        <span>guest@local</span>:~$ <span id="terminal-command"></span><span class="terminal-cursor aux-cursor">█</span>
       </div>
 
       <div class="dj-box">
-        <pre id="ascii-dj" style="color: var(--neon-green); text-shadow: 0 0 5px rgba(60, 255, 0, 0.6); font-size: 14px; margin: 0; height: 16px; cursor: pointer;">(■_■) Start Audio_Vis</pre>
+        <pre id="ascii-dj" class="ascii-dj">(■_■) Start Audio_Vis</pre>
         <div class="dj-knobs-container">
           <div id="bass-knob"></div>
           <div id="treble-knob"></div>

@@ -5,16 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NightOwl Discord Bot - Terms of Service</title>
 <style>
+        :root {
+            --bg: #07090f;
+            --panel: rgba(12, 16, 24, 0.86);
+            --text: #d6f8ff;
+            --muted: #9bbbc8;
+            --accent: #05d9e8;
+            --accent-2: #ff2a6d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Share Tech Mono", "Segoe UI", sans-serif;
+            background: radial-gradient(70% 60% at 50% 20%, rgba(5, 217, 232, 0.08), transparent 70%), var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            padding: 24px 16px;
+        }
+
+        .policy-shell {
+            width: min(900px, 100%);
+            margin: 0 auto;
+            background: var(--panel);
+            border: 1px solid rgba(5, 217, 232, 0.35);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45), inset 0 0 25px rgba(5, 217, 232, 0.05);
+        }
+
+        h1, h2 { margin-top: 0; letter-spacing: 0.6px; }
+        h1 { color: var(--accent); text-shadow: 0 0 10px rgba(5, 217, 232, 0.5); }
+        h2 {
+            margin-top: 24px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        p, li { color: var(--muted); }
+        ul { padding-left: 22px; }
+        a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted rgba(5, 217, 232, 0.5); }
+        a:hover { color: var(--accent-2); border-bottom-color: rgba(255, 42, 109, 0.6); }
+        a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
         .logo {
             width: 100%;
             max-width: 600px;
             display: block;
             margin: 0 auto;
             padding: 20px 0;
+            filter: drop-shadow(0 0 16px rgba(5, 217, 232, 0.35));
         }
     </style>
 </head>
 <body>
+<main class="policy-shell">
 <h1>Terms of Service for NightOwl Discord Bot</h1>
 <p><img src="banner.png" alt="NightOwl Bot Logo" class="logo">
 
@@ -48,5 +95,6 @@
 
 <h2>7. Contact Us</h2>
 <p>If you have any questions about these Terms, please contact us at AliceD's support server: <a href="https://discord.gg/7peUVemWgS">https://discord.gg/7peUVemWgS</a></p>
+</main>
 </body>
 </html>
